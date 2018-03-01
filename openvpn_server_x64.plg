@@ -32,7 +32,7 @@
 ##&name;
 ###2018.03.01
 - Added support for Elliptic Curve crypto!
-- After changing to EC or still using RSA you must....
+- After changing to EC or still using RSA you must.
 - Re save settings on page "server config". There is now different default settings for EC & RSA.
 - RSA & EC have now it's own default settings.
 - Start to update with the default settings.
