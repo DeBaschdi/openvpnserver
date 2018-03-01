@@ -1,0 +1,117 @@
+Menu="openvpnserver:3"
+Title="Clients"
+---
+
+<div>
+<table class="tablesorter openvpnserversettings">
+<thead><th colspan="2"><b>Client configuration: Add or revoke client:&nbsp;<img src='/plugins/openvpnserver/images/users.png'></b></th><th class="header"></th></thead>
+<table class="tablesorter">
+
+      <?if ($pids=="0"):?>
+       <td>
+        <th colspan="2"><b>Status:&nbsp;</b><img src='/plugins/openvpnserver/images/device_status.png'>
+            <?if ($pids=="0"):?>
+		<span class="red"><b>Generating cert for the server is still running, please wait !!! refresh the page for progress updates.
+            <?endif;?>
+          </span>
+        </th>
+       </td>
+     <?endif;?>
+
+ <?if ($openvpnserver_running == "yes"):?>
+    <div><left><b>To change / add user  - Press Stop in "Control Action"</b></center></div>
+  <?endif;?>
+
+<?if (($ovpncertsoftware=="yes") && ($ovpncertsfolder=="yes") && ($pids!="0") && ($openvpnserver_config=="yes")):?> 
+	<form name="openvpnserver_newclient_settings" method="POST" action="/plugins/openvpnserver/openvpnserver_newclient_submit.php" target="progressFrame">
+	<tr>
+  <?if ($openvpnserver_running != "yes"):?>
+	 
+	<d1>
+	<td>
+		<fieldset class="radiogroup"> 
+		<legend>Type of clients file</legend> 	
+		<input type="radio" name="vpn_type[]" value="single" onchange="IOSdisable(this)" > Single files 
+		<input type="radio" name="vpn_type[]" value="Inline" checked="checked" onchange="IOSdisable(this)" > One Inline certificate file 
+		<input type="radio" name="vpn_type[]" value="PK12" onchange="IOSCheck(this)" > PKCS#12 file + .ovpn
+		</fieldset>
+		<blockquote class="inline_help">
+		Single files: Creates ca, cert, key, ta.key and ovpn as single files.
+	
+		One Inline certificate file: This integrating the contents of the ca, cert, key, and the ta.key file into the client configuration file itself.
+
+		PKCS#12: Creates 2 files: a *.p12 file that contains the CA certificate, client certificate and keys. And a client file *.ovpn file = OpenVPN configuration file. 
+		</blockquote>
+	<br />
+	</td>
+	</d1>
+	<br />
+
+	<form id="form" method="post"> 
+	<tr />
+		<d1>
+		<td>
+			<button style="font-size:15px">Add client <i class="fa fa-save"></i></button />
+			<input type="text" title="Add a username" style="font-size:10pt;" style="width:16%" maxlength="25" name="ADD_CLIENT" id="ADD_CLIENT" required placeholder="Add a username..."/>
+			<input type="text" title="Add a password for the iOS cert" style="font-size:10pt;" style="width:16%" maxlength="25" name="PASSWORD_PKCS12" value="" required  id="PASSWORD_PKCS12" disabled="disabled"/><br />
+		<br />
+		<blockquote class="inline_help">
+			Add a new client.
+		</blockquote>
+		<hr />
+		</td>
+		</d1>	
+
+		</form>	
+  <?endif;?>
+  </tr>
+</form>
+
+<form name="openvpnserver_revoke_client_settings" method="POST" action="/plugins/openvpnserver/openvpnserver_revoke_client_submit.php" target="progressFrame">
+	<dl>
+	<td>
+		<?if ($openvpnserver_running != "yes"):?>
+		 <form markdown="1" name="openvpnserver_client2settings" method="POST">
+		 <button style="font-size:15px">Revoke client <i class="fa fa-eraser"></i></button>
+		   <input type="text" title="When revoke a client,this will generate (or update) the crl.pem file in the keys directory, this file is found by the plugin, it will add following line crl-verify crl.pem in your OpenVPN server config file, so that OpenVPN can reject any connections coming from clients which present a revoked certificate." style="font-size:10pt;" style="width:16%" maxlength="25" name="REVOKE_CLIENT" id="REVOKE_CLIENT"  placeholder="Add a username to revoke..." required="required">	
+		  <blockquote class="inline_help">
+			When revoke a client,this will generate (or update) the crl.pem file in the keys directory, this file is found by the plugin, it will add following line crl-verify crl.pem in your OpenVPN server config file, so that OpenVPN can reject any connections coming from clients which present a revoked certificate.
+		 </blockquote>
+		</form>
+	   <?endif;?>
+	</td>
+	</dl>
+</form>
+
+ <?endif;?>
+</table>
+
+<?if (($openvpnserver_running != "yes") && ($pids!="0")):?>
+	<td><textarea class="tooltip" title="OpenVPN add client log:" wrap="hard" readonly="yes" style="width: 700px; height: 260px;color: green;font-size: 8pt"><?php echo $add_client_log; ?></textarea></td>
+<?endif;?>
+</div>
+
+<script type="text/javascript">
+
+function IOSCheck(what){ 
+    if(what.checked)
+	{
+		document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=0 
+		document.openvpnserver_newclient_settings.PASSWORD_PKCS12.placeholder="Add a password..."
+	}
+		else
+    {
+   
+
+	document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=1
+    document.openvpnserver_newclient_settings.PASSWORD_PKCS12.value=""
+    }
+}
+function IOSdisable(what)
+	{ 
+    document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=1
+ document.openvpnserver_newclient_settings.PASSWORD_PKCS12.placeholder=""
+    } 
+    
+
+</script>

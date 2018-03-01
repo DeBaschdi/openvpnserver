@@ -1,0 +1,886 @@
+#! /bin/bash
+openvpnserver_cert_updatecfg()
+{
+# Arguments file used for WEBUI configuration update
+ARGUMENTS_FILE="/usr/local/emhttp/plugins/openvpnserver/openvpnserver_cert.args"
+[ -f $ARGUMENTS_FILE ] && source $ARGUMENTS_FILE
+
+PASSPHRASE=$PASSPHRASE_NEW
+#KEY_PATH=$KEY_PATH_NEW
+INSTALL_ON_BOOT=$INSTALL_ON_BOOT_NEW
+EASYRSAKEYSIZE=$EASYRSAKEYSIZE_NEW
+DISCONNECT_ON_UMOUNT=$DISCONNECT_ON_UMOUNT_NEW
+SERVER_PATH=$SERVER_PATH_NEW
+
+  write_cfg_cert
+}
+
+#################
+# W R I T E C F G
+#################
+write_cfg_cert()
+{
+  echo "# openvpnserver plugin configuration file for the certs" > /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+  echo "PASSPHRASE=\"$PASSPHRASE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "INSTALL_ON_BOOT=\"$INSTALL_ON_BOOT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAKEYSIZE=\"$EASYRSAKEYSIZE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "DISCONNECT_ON_UMOUNT=\"$DISCONNECT_ON_UMOUNT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "SERVER_PATH=$SERVER_PATH" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+  logger -trc.openvpnserver -plocal7.info -is "Plugin configuration for certs written"
+
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+if [ -e $SERVER_PATH ]; then
+	chmod 755 $SERVER_PATH
+else
+	mkdir -p $SERVER_PATH
+	chmod 755 $SERVER_PATH
+fi
+}
+
+openvpnserver_updatecfg()
+{
+# Arguments file used for WEBUI configuration update
+ARGUMENTS_FILE="/usr/local/emhttp/plugins/openvpnserver/openvpnserver.args"
+
+[ -f $ARGUMENTS_FILE ] && source $ARGUMENTS_FILE
+
+NETWORK=$NETWORK_NEW
+NETMASK=$NETMASK_NEW
+SERVER_PORT=$SERVER_PORT_NEW
+CANONICAL=$CANONICAL_NEW
+PROTOCOL=$PROTOCOL_NEW
+CIPHER=$CIPHER_NEW
+CLIENT=$CLIENT_NEW
+HASH_ALGO=$HASH_ALGO_NEW
+GATEWAY=$GATEWAY_NEW
+SUBNET=$SUBNET_NEW
+LAN_SUBNET=$LAN_SUBNET_NEW
+COMP_LZO=$COMP_LZO_NEW
+IPP=$IPP_NEW
+DHCP_1=$DHCP_1_NEW
+TELNET_CONSOLE=$TELNET_CONSOLE_NEW
+VERB=$VERB_NEW
+IP_PORT_SHARE=$IP_PORT_SHARE_NEW
+TLSENCRYPT=$TLSENCRYPT_NEW
+  write_cfg
+}
+
+#################
+# W R I T E C F G
+#################
+write_cfg()
+{
+  echo "# openvpnserver plugin configuration file" > /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "NETWORK=$NETWORK" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "NETMASK=$NETMASK" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "SERVER_PORT=$SERVER_PORT" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "CANONICAL=$CANONICAL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "PROTOCOL=$PROTOCOL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "CIPHER=\"$CIPHER\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "CLIENT=\"$CLIENT\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "HASH_ALGO=\"$HASH_ALGO\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "GATEWAY=\"$GATEWAY\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "SUBNET=\"$SUBNET\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "LAN_SUBNET=\"$LAN_SUBNET\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "COMP_LZO=\"$COMP_LZO\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg  
+  echo "IPP=\"$IPP\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "DHCP_1=\"$DHCP_1\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "TELNET_CONSOLE=\"$TELNET_CONSOLE\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "VERB=\"$VERB\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "IP_PORT_SHARE=\"$IP_PORT_SHARE\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "TLSENCRYPT=\"$TLSENCRYPT\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+
+  logger -trc.openvpnserver -plocal7.info -is "Plugin configuration written"
+}
+
+openvpnserver_start()
+{
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+rm -f /var/local/emhttp/plugins/openvpnserver/add_client.log
+
+if [ ! -f /var/run/openvpnserver/openvpnserver.pid ]; then
+    	echo "Starting Openvpn server....."
+	source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+	echo "sudo -H -u root openvpn --writepid /var/run/openvpnserver/openvpnserver.pid --config $SERVER_PATH/openvpnserver.ovpn --script-security 2 --daemon 2>&1 &" > /var/local/emhttp/plugins/openvpnserver/openvpnserver.sh
+	chmod 755 /var/local/emhttp/plugins/openvpnserver/openvpnserver.sh
+	sleep 0.5
+
+	nohup /var/local/emhttp/plugins/openvpnserver/openvpnserver.sh > /var/local/emhttp/plugins/openvpnserver/openvpnserver.out /dev/null & 
+	sleep 1
+
+	if [ -f /var/run/openvpnserver/openvpnserver.pid ]; then
+		echo "OK... Started"
+		echo "Adding iptables rule ....."
+		openvpnserver_iptables_add; 
+ 	else
+ 		echo "An error occurred, server not started!. More info in /var/log/openvpnserver.log or /var/local/emhttp/plugins/openvpnserver/openvpnserver.out"
+ 	fi
+ else
+        echo "Server already started"
+ fi
+}
+
+openvpnserver_stop()
+{
+if [ -e /var/run/openvpnserver/openvpnserver.pid ]; then
+   echo "Stoping Openvpnserver....."
+   kill $(cat /var/run/openvpnserver/openvpnserver.pid)
+   sleep 2
+   rm -f /var/run/openvpnserver/openvpnserver.pid
+   rm -rf /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+   rm -rf /var/log/openvpnserver.log
+   rm -rf /var/log/openvpnserver-status.log
+   echo "... Stopped"
+   echo "Deleting iptables rule ...."
+   openvpnserver_iptables_delete;
+else
+  echo "Server already stoped"
+fi
+}
+
+openvpnserver_restart()
+{
+ openvpnserver_stop;
+ openvpnserver_start;
+}
+
+write_openvpn_conf()
+{
+#Writing server configuration file : openvpnserver.ovpn
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+if [ -e $SERVER_PATH ]; then
+	chmod 755 $SERVER_PATH
+else
+	mkdir -p $SERVER_PATH
+	chmod 755 $SERVER_PATH
+fi
+
+echo "server $NETWORK $NETMASK" > $SERVER_PATH/openvpnserver.ovpn
+
+LOCAL_SERVER_IP=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip)
+echo "local $LOCAL_SERVER_IP" >> $SERVER_PATH/openvpnserver.ovpn
+
+echo "dev tun" >> $SERVER_PATH/openvpnserver.ovpn
+echo "port $SERVER_PORT" >> $SERVER_PATH/openvpnserver.ovpn
+echo "proto $PROTOCOL" >> $SERVER_PATH/openvpnserver.ovpn
+echo "dh $SERVER_PATH/dh.pem" >> $SERVER_PATH/openvpnserver.ovpn
+
+if [[ -f "$SERVER_PATH/crl.pem" ]]; then
+	echo "crl-verify $SERVER_PATH/crl.pem" >> $SERVER_PATH/openvpnserver.ovpn
+	echo "command 'crl-verify' was added!"
+else
+	echo "file crl.pem NOT FOUND"
+fi
+
+echo "ca $SERVER_PATH/ca.crt" >> $SERVER_PATH/openvpnserver.ovpn
+echo "cert $SERVER_PATH/server.crt" >> $SERVER_PATH/openvpnserver.ovpn
+echo "key $SERVER_PATH/server.key" >> $SERVER_PATH/openvpnserver.ovpn
+
+
+if [ "$IPP" == "ipp.txt" ]; then
+	echo "ifconfig-pool-persist /boot/config/plugins/openvpnserver/$IPP" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$DHCP_1" == "GOOGLE" ]; then
+   echo "push "\""dhcp-option DNS 8.8.8.8""\"" >> $SERVER_PATH/openvpnserver.ovpn
+   echo "push "\""dhcp-option DNS 8.8.4.4""\"" >> $SERVER_PATH/openvpnserver.ovpn
+
+elif [ "$DHCP_1" == "OPENDNS" ]
+then
+   echo "push "\""dhcp-option DNS 208.67.222.222""\"" >> $SERVER_PATH/openvpnserver.ovpn
+   echo "push "\""dhcp-option DNS 208.67.222.220""\"" >> $SERVER_PATH/openvpnserver.ovpn
+else
+	LOCAL_GW=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver get_gw)
+	echo "push "\"dhcp-option DNS $LOCAL_GW"\"" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$GATEWAY" != "Disable" ]; then
+	echo "push "\"$GATEWAY"\"" >> $SERVER_PATH/openvpnserver.ovpn
+	echo "push "\"remote-gateway  $LOCAL_SERVER_IP"\"" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+echo "tls-server" >> $SERVER_PATH/openvpnserver.ovpn
+echo "$VERB" >> $SERVER_PATH/openvpnserver.ovpn
+
+echo "tls-version-min 1.2" >> $SERVER_PATH/openvpnserver.ovpn
+echo "tls-cipher TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-256-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-256-CBC-SHA:TLS-DHE-RSA-WITH-AES-128-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-128-CBC-SHA" >> $SERVER_PATH/openvpnserver.ovpn
+echo "$TLSENCRYPT $SERVER_PATH/ta.key" >> $SERVER_PATH/openvpnserver.ovpn # NEW 2.4
+
+####NEW FROM 2.4###  echo "tls-crypt $SERVER_PATH/ta.key" >> $SERVER_PATH/openvpnserver.ovpn
+
+echo "persist-key" >> $SERVER_PATH/openvpnserver.ovpn
+echo "persist-tun" >> $SERVER_PATH/openvpnserver.ovpn
+echo "keepalive 10 120" >> $SERVER_PATH/openvpnserver.ovpn
+
+echo "user nobody" >> $SERVER_PATH/openvpnserver.ovpn
+echo "group users" >> $SERVER_PATH/openvpnserver.ovpn
+
+if [ "$CIPHER" != "" ]; then
+	echo "$CIPHER" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$CLIENT" != "" ]; then
+	echo "client-to-client" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$HASH_ALGO" != "" ]; then
+
+	echo "$HASH_ALGO" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$COMP_LZO" != "0" ]; then
+	if [ "$COMP_LZO" == "compress lz4-v2" ]; then
+		echo "$COMP_LZO" >> $SERVER_PATH/openvpnserver.ovpn
+		echo "push "\"compress lz4-v2"\"" >> $SERVER_PATH/openvpnserver.ovpn
+	else
+		echo "$COMP_LZO" >> $SERVER_PATH/openvpnserver.ovpn
+	fi
+fi
+
+if [ "$SUBNET" = "topology subnet" ]; then
+	echo "$SUBNET" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$LAN_SUBNET" = "Enable" ]; then
+	LANSUBNET=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver get_subnet)
+	echo "push "\"route $LANSUBNET 255.255.255.0"\"" >> $SERVER_PATH/openvpnserver.ovpn
+	IP_ADDR="`echo $NETWORK | rev | sed s'/0/1/' | rev`"
+fi
+
+echo "push "\"resolv-retry infinite"\"" >> $SERVER_PATH/openvpnserver.ovpn
+echo "status /var/log/openvpnserver-status.log 5" >> $SERVER_PATH/openvpnserver.ovpn
+echo "log-append /var/log/openvpnserver.log" >> $SERVER_PATH/openvpnserver.ovpn
+echo "status-version 2" >> $SERVER_PATH/openvpnserver.ovpn
+
+if [ "$TELNET_CONSOLE" = "yes" ]; then
+	SERVERIP=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip)
+	echo "management $SERVERIP 10000" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$IP_PORT_SHARE" != "" ]; then
+	echo "port-share $IP_PORT_SHARE" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+echo "# Notify the client that when the server restarts so it" >> $SERVER_PATH/openvpnserver.ovpn
+echo "# can automatically reconnect." >> $SERVER_PATH/openvpnserver.ovpn
+echo "explicit-exit-notify 0" >> $SERVER_PATH/openvpnserver.ovpn
+
+chmod 640 $SERVER_PATH/openvpnserver.ovpn
+}
+
+openvpnserver_get_def_gw()
+{
+   #localgateway="`ip route show default | grep default | awk {'print $3'}`"
+   GW=$(/sbin/ip route | awk '/default/ { print $3 }')
+   echo $GW
+}
+
+openvpnserver_get_subnet()
+{
+   GW_SUB=$(/sbin/ip route | awk '/default/ { print $3 }')
+   SUBNET_IP="${GW_SUB%.*}.0"
+   echo $SUBNET_IP
+}
+
+openvpnserver_get_default_server()
+{
+cp /usr/local/emhttp/plugins/openvpnserver/default.cfg /boot/config/plugins/openvpnserver/openvpnserver.cfg
+}
+
+openvpnserver_get_vpnserver()
+{
+   VPN_SERVER=$( ifconfig tun0 | grep "inet " | awk '{print $2}')
+   echo $VPN_SERVER
+}
+
+openvpnserver_get_easy()
+{
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+cd $SERVER_PATH
+
+EASYRSA_DL_VERSION=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip | grep archive |  cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig")
+echo $EASYRSA_DL_VERSION
+
+EASYRSA_FILENAME=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $5 }' |  sed s'/.$//')
+echo $EASYRSA_FILENAME
+echo "Going to download ....$EASYRSA_DL_VERSION"
+wget $EASYRSA_DL_VERSION
+
+logger -trc.openvpnserver -plocal7.info -is  "Deleting the client folder and files when new easyrsa are insatlled."
+echo "Deleting the client folder and files when new easyrsa are insatlled."
+rm -vrf $SERVER_PATH/clients/
+
+rm -vrf easy-rsa
+unzip -o $EASYRSA_FILENAME
+basename $EASYRSA_FILENAME .zip  > $SERVER_PATH/installed_easyrsa.txt
+mv -vf easy-rsa* easy-rsa
+rm -vrf $EASYRSA_FILENAME
+chmod 400 easy-rsa
+}
+
+openvpnserver_checkfolder()
+{
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+if [ -d $SERVER_PATH ]; then
+  echo "Yes"
+else
+  echo "No"
+#  exit 1
+fi
+}
+
+openvpnserver_revoke_client()
+{
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+echo "Revoking client: " $1
+
+cd $SERVER_PATH/easy-rsa/easyrsa3
+
+/usr/bin/expect <<eof | tee /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+	set timeout 5
+	spawn ./easyrsa revoke $1
+	expect "*Continue with revocation:"
+	send "yes\r"
+	expect "Enter pass phrase*"
+	send "$PASSPHRASE\r"
+        expect eof
+eof
+
+/usr/bin/expect <<eof | tee /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+	set timeout 5
+	spawn ./easyrsa gen-crl
+	expect "Enter pass phrase*"
+	send "$PASSPHRASE\r"
+        expect eof
+eof
+
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/crl.pem $SERVER_PATH
+chmod 640 $SERVER_PATH/crl.pem
+
+ if grep -R "crl.pem" "$SERVER_PATH/openvpnserver.ovpn" ; then
+        echo "Your openvpnserver.ovpn are already updated to use crl.pem"
+    else
+	echo "crl-verify $SERVER_PATH/crl.pem" >> $SERVER_PATH/openvpnserver.ovpn
+        echo "command 'crl-verify' was added to your openvpnserver.ovpn!"
+ fi
+}
+
+openvpnserver_add_client()
+{
+
+#Clients config
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+client=$2
+
+## check if this client package already exists
+if grep $client $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt; then
+   echo "$client alredy exist. try a different name!" >> /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+   echo "$client alredy exist. try a different name!"
+   exit 1
+fi
+
+## New V3 easy-rsa to client "###
+echo "Adding client: " $client
+mkdir -p $SERVER_PATH/clients/$client
+chmod 755 $SERVER_PATH/clients/$client
+cd $SERVER_PATH/easy-rsa/easyrsa3
+
+
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+	set timeout 5
+	spawn ./easyrsa build-client-full $client nopass
+	expect "Enter pass phrase*"
+	send "$PASSPHRASE\r"
+expect eof
+eof
+
+
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/issued/$client.crt $SERVER_PATH/clients/$client
+cp $SERVER_PATH/easy-rsa/easyrsa3/ta.key $SERVER_PATH/clients/$client	
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/ca.crt $SERVER_PATH/clients/$client
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/private/$client.key $SERVER_PATH/clients/$client
+
+PORT=$SERVER_PORT
+#LOG_DIR="/var/log/openvpnserver_cert"
+
+
+#REMOTE_ADDR=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip)
+INTERNET_IP=$(/var/local/emhttp/plugins/openvpnserver/check-my-ip.sh)
+
+if [[ $CANONICAL != "" ]]; then
+	INTERNET_IP=$CANONICAL
+fi
+
+if [ "$COMP_LZO" == "compress lz4-v2" ]; then
+	COMP_LZO_TMP=""
+else	
+	COMP_LZO_TMP=$COMP_LZO 
+fi
+
+cat > $SERVER_PATH/clients/$client/$client.ovpn <<END
+remote $INTERNET_IP
+$CIPHER
+$HASH_ALGO
+client
+dev tun
+proto $PROTOCOL
+port $PORT
+resolv-retry infinite
+tls-client
+nobind
+persist-key
+persist-tun
+ca ca.crt
+cert $client.crt
+key $client.key
+$TLSENCRYPT ta.key
+remote-cert-tls server
+tls-cipher TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-256-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-256-CBC-SHA:TLS-DHE-RSA-WITH-AES-128-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-128-CBC-SHA
+$COMP_LZO_TMP
+$VERB
+route-delay 2
+END
+#*****END ****
+
+
+if [[ $1 == "single" ]]; then
+	cd $SERVER_PATH/clients/$client
+	echo "creating a zip file ....."
+	echo "$SERVER_PATH/clients/$client/$client.zip"
+	zip $SERVER_PATH/clients/$client/$client.zip $client.ovpn $client.crt $client.key ca.crt ta.key
+	echo "Client files have been stored in this folder .."
+	echo "$SERVER_PATH/clients/$client"
+fi
+
+
+if [[ $1 == "Inline" ]]; then  # this is for an inline file (Autologin profile)
+cd $SERVER_PATH/clients/$client
+
+#######################################################################
+#       Latest versions of Openvpn supports inline certs and keys
+#       so you have one client script, instead of script plus 4 keys and certs
+#######################################################################
+echo "you got only one client script, instead of script plus 4 keys and certs" | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+ca="ca.crt"
+cert=$client.crt
+key=$client.key
+tlsauth="ta.key"
+ovpndest="$client.ovpn"
+
+########################################################################
+#       Delete existing call to keys and certs
+        sed -i \
+        -e '/ca .*'$ca'/d'  \
+        -e '/cert .*'$cert'/d' \
+        -e '/key .*'$key'/d' \
+        -e '/'$TLSENCRYPT' .*'$tlsauth'/d' $ovpndest #NEED TO LOOKINTO THIS for 2.4!"!!!!!
+		#####################################################################
+		#####################################################################
+
+########################################################################
+#       Add keys and certs inline
+#echo "key-direction 1" >> $ovpndest # Removed from version 2.4
+
+echo "<ca>" >> $ovpndest
+awk /BEGIN/,/END/ < ./$ca >> $ovpndest
+echo "</ca>" >> $ovpndest
+
+echo "<cert>" >> $ovpndest
+awk /BEGIN/,/END/ < ./$cert >> $ovpndest
+echo "</cert>" >> $ovpndest
+
+echo "<key>" >> $ovpndest
+awk /BEGIN/,/END/ < ./$key >> $ovpndest
+echo "</key>" >> $ovpndest
+
+echo "<$TLSENCRYPT>" >> $ovpndest # New 2.4
+awk /BEGIN/,/END/ < ./$tlsauth >> $ovpndest
+echo "</$TLSENCRYPT>" >> $ovpndest
+
+########################################################################
+#       Backup to new subdirectory, just incase
+#mkdir -p backup
+#Remove old backup folders
+#find . -name "backup" -exec rm -r "{}" \;
+
+#cp $ca $cert $key $tlsauth $ovpndest ./backup
+
+#       Delete key and cert files, backup already made hopefully
+rm $ca $cert $key $tlsauth
+echo "Done Inline file !" | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+fi
+
+if [[ $1 == "PK12" ]]; then  # this is for pkcs12 file (IOS ..)
+
+/usr/bin/expect <<eof | tee /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+	set timeout 5
+	spawn ./easyrsa  export-p12 $client
+	expect "Enter Export Password:"
+	send "$3\r"
+	expect "Verifying - Enter Export Password:"
+	send "$3\r"
+	expect eof
+eof
+
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/private/$client.p12 $SERVER_PATH/clients/$client
+
+cd $SERVER_PATH/clients/$client
+
+#modify the client ovpn file to work with IOS
+
+		echo "Update $client.ovpn to be used with IOS"
+
+		sed -i '/n$TLSENCRYPT ta.key/d' $client.ovpn
+		sed -i '/ca ca.crt/d' $client.ovpn
+		sed -i '/key/d' $client.ovpn
+		sed -i '/cert/d' $client.ovpn
+
+		echo "<ca>" >> $client.ovpn
+		cat ca.crt >> $client.ovpn
+		echo "</ca>" >> $client.ovpn
+
+		#echo "key-direction 1" >> $client.ovpn #Removed from version 2.4
+		echo "<$TLSENCRYPT>" >> $client.ovpn
+		cat ta.key >> $client.ovpn
+		echo "</$TLSENCRYPT>" >> $client.ovpn
+
+		sleep 1
+
+		#make a readme file with password and instructions to below zip file
+		echo "Password for the cert: $3" > README.txt
+		echo "" >> README.txt
+		echo "Next step is to bring this file to our mobile device. Send an e-mail to yourself with the .p12 file attached." >> README.txt
+		echo "Since the file is password protected, it is safe to e-mail." >> README.txt
+		echo "" >> README.txt
+		echo "When you open the e-mail on your mobile device, and click the .p12 attachment you will be asked to install the certificate. Click install and confirm installation." >> README.txt
+		echo "If your device has a passcode, you will be asked to enter it. Afterwards, you need to type the password you choose when generating the p12 file." >> README.txt
+		echo "iOS mentions the certificate is Not Trusted. Dont worry, its fine." >> README.txt
+		echo "" >> README.txt
+		echo "Your certificate is now installed on iOS and it is ready to be used by the OpenVPN app." >> README.txt
+		echo "" >> README.txt
+	    echo "e-mail the ovpn file to yourself as well. The e-mail app on iOS will allow you to import this configuration to the OpenVPN app by clicking on the file." >> README.txt 
+		echo "The OpenVPN app will show your imported configuration. Confirm by tapping the  green + icon." >> README.txt
+		echo "Next step, select the certificate to use with this profile. Here you will select the certificate we imported into iOS in the previous step." >> README.txt
+
+		sleep 1
+#		chmod 640 {$client.p12,$client.ovpn,README.txt}
+		echo "Creating a zip file for the client"
+		zip $SERVER_PATH/clients/$client/$client.zip $client.p12 $client.ovpn README.txt
+		echo "Client files have been stored in this folder .."
+		echo "$SERVER_PATH/clients/$client"
+
+		#Clean up files that are not used when using p12
+		rm $SERVER_PATH/clients/$client/$client.crt
+		rm $SERVER_PATH/clients/$client/ta.key
+		rm $SERVER_PATH/clients/$client/ca.crt
+		rm $SERVER_PATH/clients/$client/$client.key
+
+fi
+}
+
+openvpnserver_renew_server_cert()
+{
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+rm -f /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+
+RENEW_CERT="yes"
+
+#Regenerate all cert and start the a fresh server.
+
+echo "Regenerate all cert and start the a fresh server."
+echo ""
+echo "WARNING!!!"
+echo ""
+echo "You are about to remove the EASYRSA_PKI at: /mnt/appdata/myVPNserver_test5/easy-rsa/easyrsa3/pki"
+echo "and initialize a fresh PKI here."
+logger -trc.openvpnserver -plocal7.info -is  "Regenerate all cert and start the a fresh server."
+logger -trc.openvpnserver -plocal7.info -is  ""
+logger -trc.openvpnserver -plocal7.info -is  "WARNING!!!"
+logger -trc.openvpnserver -plocal7.info -is  ""
+logger -trc.openvpnserver -plocal7.info -is  "You are about to remove the EASYRSA_PKI at: /mnt/appdata/myVPNserver_test5/easy-rsa/easyrsa3/pki"
+logger -trc.openvpnserver -plocal7.info -is  "and initialize a fresh PKI here."
+
+
+logger -trc.openvpnserver -plocal7.info -is  "Deleting the client folder and files."
+rm -r $SERVER_PATH/clients/
+
+cd $SERVER_PATH/easy-rsa/easyrsa3
+
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+        set timeout 5
+        spawn ./easyrsa init-pki
+        expect "  Confirm removal:"
+        send "yes\r"
+        send "\r"
+expect eof
+eof
+sleep 1
+
+#call rutine to create all the cert
+openvpnserver_create_server_cert;
+
+}
+openvpnserver_create_server_cert()
+{
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+#rm -f /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+
+#LOG_DIR="/var/log/openvpnserver_cert"
+cd $SERVER_PATH/easy-rsa/easyrsa3
+
+echo "SIZE : $EASYRSAKEYSIZE"
+sed -i '/set_var EASYRSA_KEY_SIZE\t/d' ./easyrsa
+sed -i "/set_var EASYRSA_ALGO\t\trsa/a \\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" ./easyrsa
+
+#END
+if [ "$RENEW_CERT" != "yes" ]; then
+./easyrsa init-pki
+fi
+
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+	set timeout 5
+	spawn ./easyrsa build-ca
+	expect "Enter PEM pass phrase:"
+	send "$PASSPHRASE\r"
+	expect "Verifying*"
+	send "$PASSPHRASE\r"
+	expect "Common Name*"
+	send "\r"
+expect eof
+eof
+
+sleep 1
+
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+	set timeout 5
+	spawn ./easyrsa build-server-full server nopass
+	expect "Enter pass phrase*"
+	send "$PASSPHRASE\r"
+expect eof
+eof
+
+sleep 1
+
+./easyrsa gen-dh |& tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+openvpn --genkey --secret ta.key | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+
+RENEW_CERT=""
+
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/ca.crt $SERVER_PATH
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/issued/server.crt $SERVER_PATH
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/dh.pem $SERVER_PATH
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/private/server.key $SERVER_PATH
+cp $SERVER_PATH/easy-rsa/easyrsa3/ta.key $SERVER_PATH
+
+chmod 400  $SERVER_PATH/ca.crt
+chmod 400  $SERVER_PATH/server.crt
+chmod 400  $SERVER_PATH/dh.pem
+chmod 400  $SERVER_PATH/server.key
+chmod 400  $SERVER_PATH/ta.key
+
+}
+
+server_IP()
+{
+	IP=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $7}')
+	echo $IP
+}
+
+openvpnserver_getonlineversion()
+{
+OPEN_VPN_HOSTING_SERVER="http://openvpn.net/index.php/open-source/downloads.html"
+OPEN_VPN_ONLINE_VER=$(wget ${OPEN_VPN_HOSTING_SERVER} -q --no-check-certificate -O - |grep "Change Log" | awk 'gsub(/.*OpenVPN | -- released on.*/,"")')
+echo "${OPEN_VPN_ONLINE_VER:0:6}"
+}
+
+openvpnserver_getlocalversion()
+{
+if [ -e /usr/sbin/openvpn ];
+   then
+     OPEN_VPN_INSTALLED=$(openvpn --version | grep "OpenVPN " | awk 'gsub(/.*i4 | x.*/,"")')
+     #echo $OPEN_VPN_INSTALLED
+     echo "${OPEN_VPN_INSTALLED: -6}"
+ fi
+}
+
+openvpnserver_view_online_user() {
+VIEW_ONLINE_USER="` grep -P "CLIENT_LIST," /var/log/openvpnserver-status.log | sed -r 's/^[^,]+,+((,*[^,]+){1}).*/\1/' |  grep -Eiv "CLIENT_LIST" | sed 's/$/\ ; /'`"
+if [ "$VIEW_ONLINE_USER" == "" ]
+   then
+      echo "NO CLIENTS CONECTED"
+   else
+      echo "$VIEW_ONLINE_USER"
+fi
+}
+
+openvpnserver_list_valid_user(){
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+if [ -f $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt ]; then
+#   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g'  | grep -Eiv "server" | sed 's/$/\ ; /'`"
+   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server" | sed 's/$/\ ; /'`"
+
+    if [ "$VIEW_VALID_USER" == "" ]
+      then
+        echo "NO CLIENTS CREATED YET"
+    else
+       echo "$VIEW_VALID_USER" 
+    fi
+fi
+}
+
+openvpnserver_cleanup_client_folder()
+{
+#Clean up client backup folder from previuse relea.
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+	find $SERVER_PATH/clients -name "backup" -exec rm -r "{}" \;
+}
+
+openvpnserver_view_revoked_user() {
+source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+
+if [ -f $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt ]; then
+#   VIEW_REVOKED_USER="`grep -P "R\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=\(.*\)\/name.*/\1/g' | sed 's/$/\ ; /'`"
+  VIEW_REVOKED_USER="`grep -P "R\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | sed 's/$/\ ; /'`"
+
+
+     if [ "$VIEW_REVOKED_USER" == "" ]
+       then
+         echo "NO CLIENTS REVOKED"
+       else
+        echo "$VIEW_REVOKED_USER"
+     fi
+fi
+}
+
+openvpnserver_iptables_add() {
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+
+NIC=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
+echo $NIC
+IPRULES1="iptables -t nat -A POSTROUTING -s $NETWORK/24 -o $NIC -j MASQUERADE"
+eval $IPRULES1
+
+iptables -t nat -L POSTROUTING -n -v --line-numbers | grep $NETWORK
+}
+
+openvpnserver_iptables_delete() {
+
+for line_num in $(iptables -vn -t nat --line-numbers --list POSTROUTING |grep $NETWORK|awk '{print $1}')
+
+do
+  LINES="$line_num $LINES"
+done
+
+# Delete the lines, last to first.
+for line in $LINES
+do
+  iptables -t nat -D POSTROUTING $line
+done
+
+unset LINES
+iptables -t nat -L POSTROUTING -n -v --line-numbers | grep $NETWORK
+}
+
+# read our configuration
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
+
+case "$1" in
+  'updatecfg')
+    openvpnserver_updatecfg
+    ;;
+  'updatecfg_cert')
+    openvpnserver_cert_updatecfg
+    ;;
+  'start')
+    openvpnserver_start
+    ;;
+  'stop')
+    openvpnserver_stop
+    ;;
+  'restart')
+    openvpnserver_restart
+    ;;
+  'writeconf')
+    write_openvpn_conf
+    ;;
+  'download_easy-rsa')
+    openvpnserver_get_easy
+    ;;
+  'create_server_cert')
+    openvpnserver_create_server_cert
+    ;;
+  'renew_server_cert')
+    openvpnserver_renew_server_cert
+    ;;
+  'serverip')
+    server_IP
+    ;;
+    'checkfolder')
+    openvpnserver_checkfolder
+    ;;
+  'getonlineversion')
+   openvpnserver_getonlineversion
+   ;;
+  'getlocalversion')
+   openvpnserver_getlocalversion
+   ;;
+  'get_gw')
+   openvpnserver_get_def_gw
+   ;;
+   'get_subnet')
+   openvpnserver_get_subnet
+   ;;
+  'get_vpnserver')
+   openvpnserver_get_vpnserver
+   ;;
+   'add_client')
+   openvpnserver_add_client $2 $3 $4
+   ;;
+   'revoke_client')
+   openvpnserver_revoke_client $2 $3
+   ;;
+    'view_valid_user')
+   openvpnserver_list_valid_user
+   ;;
+    'view_online_user')
+   openvpnserver_view_online_user
+   ;;
+    'view_revoked_user')
+   openvpnserver_view_revoked_user
+   ;;
+    'iptables')
+   openvpnserver_iptables_add
+   ;;
+     'iptablesd')
+   openvpnserver_iptables_delete
+   ;;
+    'default_value_server')
+   openvpnserver_get_default_server
+    ;;
+  'clean_up_client_folder')
+   openvpnserver_cleanup_client_folder
+    ;;
+*)
+
+    echo "usage $0 start|stop|restart|download_easy-rsa|create_server_cert|renew_server_cert|add_client 'name'|add_client 'name' 'password|revoke_client 'name'|view_valid_user|view_online_user|view_revoked_user"
+esac

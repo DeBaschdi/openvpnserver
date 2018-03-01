@@ -1,0 +1,37 @@
+Menu="openvpnserver:4"
+Title="Logs"
+---
+<div>
+
+<table class="tablesorter openvpnserversettings">
+<thead><th colspan="2"><b>OpenVPN Server Logs:&nbsp;</b><i class="fa fa-heartbeat" style="font-size:20px;"></i></th><dt class="header"></dt></thead>
+
+<table></table>
+
+<dl>
+<br>
+	<dt><textarea class="tooltip" title="OpenVPN log" wrap="hard" readonly="yes" style="width: 800px; height: 200px;color: green;font-size: 8pt"><?php echo $openvpn_log; ?></textarea></dt>
+</br>
+</dl>
+
+<dl>
+<br>
+	<dt><textarea class="tooltip" title="Information from 'ip route show'  is displayed here.." wrap="hard" readonly="yes" style="width: 800px; height: 130px;color: green;font-size: 8pt"><?php echo $check_netstat; ?></textarea></dt>
+</br>
+</dl>
+
+<dl>
+<br>
+	<dt><textarea class="tooltip" title="OpenVPN status" wrap="hard" readonly="yes" style="width: 800px; height: 160px;color: green;font-size: 8pt"><?php echo $openvpnststus_log; ?></textarea></dt>
+</br>
+</dl>		
+
+<dl>
+	<br>
+		<dt><textarea class="tooltip" title="Iptables NAT postrouting" wrap="hard" readonly="yes" style="width: 800px; height: 25px;color: red;font-size: 8pt"><?php echo $CHECK_IPTABELS_NAT; ?></textarea></dt>
+	</br>
+</dl>
+
+</table>
+</div>
+  

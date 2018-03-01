@@ -1,0 +1,12 @@
+table.tablesorter.openvpnserversettings{margin-top:-8px;}
+table.tablesorter.openvpnserversettings th:first-child{width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings td:first-child{width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings th:nth-child(2){width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings td:nth-child(2){width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings th:nth-child(3){width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings td:nth-child(3){width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings th:nth-child(4){width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings td:nth-child(4){width:33%;text-align:left;}
+table.tablesorter.openvpnserversettings tr>td+td+td{width:10%;white-space:nowrap;}
+table.tablesorter.openvpnserver{margin-top:-20px;}
+table.tablesorter.openvpnserverlog{margin-top:-88px;}
