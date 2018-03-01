@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2018.01.27">
+<!ENTITY version   "2018.03.01">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,23 @@
 
 <CHANGES>
 ##&name;
+###2018.03.01
+- Added support for Elliptic Curve crypto!
+- After changing to EC or still using RSA you must....
+- Re save settings on page "server config". There is now different default settings for EC & RSA.
+- RSA & EC have now it's own default settings.
+- Start to update with the default settings.
+- Create new server certs and clients.
+- Added a drop box on "Cert and Misc Settings" to manually DL one of the available releases of easyrsa except for (master or default branch)release for manually install!
+- The list of TLS Ciphers is updated.
+- Added -remote-cert-eku to server/client. The --remote-cert-eku ensures that a server will verify that the client certificate provided is truly a client certificate, and vice versa.
+- Default settings are updated.
+- Added cert/keys log to log page when generate the server cert/keys.
+- Added a log file when creating new client in client folder.
+- More settings for redirect-gateway in server settings.
+- More info about EAsyRSA(Installed version, current version and commits date)
+- Update of Tcl packages to  tcl-8.6.8-x86_64-2
+- Update of expect packages to 5.45.4
 ###2018.01.27
 - Changed thew way to DL easyrsa, now it will DL the default branch instead of force DL the master branch.
 ###2017.12.23
@@ -135,14 +152,14 @@
 openvpnserver version 3 64Bit with easyrsa V3
 -->
 
-<FILE Name="&pkgs;tcl-8.6.8-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/tcl-8.6.8-x86_64-1.txz</URL>
-<MD5>8951ce3fca2d6e14dfa97b400937c60b</MD5>
+<FILE Name="&pkgs;tcl-8.6.8-x86_64-2.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/tcl-8.6.8-x86_64-2.txz</URL>
+<MD5>5f714f05193a6617e575558115281f8f</MD5>
 </FILE>
 
-<FILE Name="&pkgs;expect-5.45.3-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/expect-5.45.3-x86_64-1.txz</URL>
-<MD5>0ee1e60f41e52588d403821ae40364c1</MD5>
+<FILE Name="&pkgs;expect-5.45.4-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/expect-5.45.4-x86_64-1.txz</URL>
+<MD5>2d5a3ccc7b670e7de834f37daef610d1</MD5>
 </FILE>
 
 <FILE Name="&pkgs;openvpn-2.4.4-x86_64-1.txz" Run="upgradepkg --install-new">

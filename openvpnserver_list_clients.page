@@ -28,7 +28,7 @@ function listFolderFiles($dir){
 //            echo '<li class="title">';
             echo '<br>';
             if(is_dir($dir.'/'.$ff)){
-                echo "User: " . $ff;
+                echo "Client: " . $ff;
                 listFolderFiles($dir.'/'.$ff);
             }else{
                echo '<a href="'.$dir.'/'.$ff.'">'.$ff.'</a>';

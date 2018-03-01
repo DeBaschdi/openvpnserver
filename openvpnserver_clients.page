@@ -30,7 +30,7 @@ Title="Clients"
 	<d1>
 	<td>
 		<fieldset class="radiogroup"> 
-		<legend>Type of clients file</legend> 	
+		<legend>Type of clients file</legend>
 		<input type="radio" name="vpn_type[]" value="single" onchange="IOSdisable(this)" > Single files 
 		<input type="radio" name="vpn_type[]" value="Inline" checked="checked" onchange="IOSdisable(this)" > One Inline certificate file 
 		<input type="radio" name="vpn_type[]" value="PK12" onchange="IOSCheck(this)" > PKCS#12 file + .ovpn
@@ -95,23 +95,21 @@ Title="Clients"
 
 function IOSCheck(what){ 
     if(what.checked)
-	{
+		{
 		document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=0 
 		document.openvpnserver_newclient_settings.PASSWORD_PKCS12.placeholder="Add a password..."
-	}
+		}
 		else
-    {
-   
-
-	document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=1
-    document.openvpnserver_newclient_settings.PASSWORD_PKCS12.value=""
-    }
-}
+		{
+		document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=1
+		document.openvpnserver_newclient_settings.PASSWORD_PKCS12.value=""
+		}
+	}
 function IOSdisable(what)
 	{ 
-    document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=1
- document.openvpnserver_newclient_settings.PASSWORD_PKCS12.placeholder=""
-    } 
+	document.openvpnserver_newclient_settings.PASSWORD_PKCS12.disabled=1
+	document.openvpnserver_newclient_settings.PASSWORD_PKCS12.placeholder=""
+	} 
     
 
 </script>
