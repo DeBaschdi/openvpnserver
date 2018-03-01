@@ -1,10 +1,6 @@
 Menu="openvpnserver:1"
 Title="Cert and Misc Settings "
 ---
-<?php
-$openvpnserver_cert_cfg = parse_ini_file( "/boot/config/plugins/openvpnserver/openvpnserver_cert.cfg");
-$EASYRSA_VERSION_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "/easyrsa_versions_full_path.txt";
-?>
 
 <div>
 <form name="openvpnserver_cert_settings" method="POST" action="/plugins/openvpnserver/openvpnserver_cert_submit.php" target="progressFrame" onsubmit="validateForm_cert();">
@@ -63,11 +59,8 @@ $EASYRSA_VERSION_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "/easyrsa_versi
       <dt>RSA key size</dt>
       <dd>
       <select name="EASYRSAKEYSIZE" id="EASYRSAKEYSIZE" size="1" title="If you chose 4096 bits this will take very long time. Depending on your system, this might take up to 30 to 60 minutes">
-      <?=mk_option($openvpnserver_cert_cfg['EASYRSAKEYSIZE'], "1024", "1024 bits");?>
       <?=mk_option($openvpnserver_cert_cfg['EASYRSAKEYSIZE'], "2048", "2048 bits");?>
-      <?=mk_option($openvpnserver_cert_cfg['EASYRSAKEYSIZE'], "3072", "3072 bits");?>
       <?=mk_option($openvpnserver_cert_cfg['EASYRSAKEYSIZE'], "4096", "4096 bits");?>
-      <?=mk_option($openvpnserver_cert_cfg['EASYRSAKEYSIZE'], "7168", "7168 bits");?>
       </select>
       </dd>
       </dl>
@@ -88,128 +81,8 @@ $EASYRSA_VERSION_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "/easyrsa_versi
       <input type="text" name="PASSPHRASE" id="PASSPHRASE" value="<?=$openvpnserver_cert_cfg['PASSPHRASE'];?>" title="Default is ..."  required="required">
       </dd>
       </dl>   
-     
-      <dl>
-      <dt>Default crypto mode</dt>
-      <dd>
-      <select name="CRYPTO" id="CRYPTO" size="1" onchange="disable(this.value);">
-      <?=mk_option($openvpnserver_cert_cfg['CRYPTO'], "rsa", "Traditional RSA");?>
-      <?=mk_option($openvpnserver_cert_cfg['CRYPTO'], "ec", "Elliptic curve cryptology (ec)");?>
-      </select>
-      </dd>
-      </dl>
-        <blockquote class="inline_help">
-        <p>Chose between elliptic curve keys and certs (ECC and ECDH) or RSA (cryptosystem) for openvpn server/client</p>
-		<p>It's recomended to use GCM ciphers when you have selected EC (elliptic curve)</p>
-        <p><span class="red" style="font-weight: bold">Importent</span></p>
-		<p>When you change this setting you must go back to OpenVPN Server Configuration and save the settings. This is important since it will be different settings in the <span class="red" style="font-weight: bold">openvpnserver.ovpn</span> between RSA ans EC<br />
-		<p>You also need to re generate the server certificate when shifting between these modes<br />
-		</blockquote>
-	
-      <dl>
-      <dt>Available Elliptic curves:</dt>
-      <dd>
-      <select name="CURVE" id="CURVE" size="1">
-      <?=mk_option($openvpnserver_cert_cfg['CURVE'], "secp224r1", "secp224r1");?>
-      <?=mk_option($openvpnserver_cert_cfg['CURVE'], "secp384r1", "secp384r1");?>
-      <?=mk_option($openvpnserver_cert_cfg['CURVE'], "secp521r1", "secp521r1");?>
-      <?=mk_option($openvpnserver_cert_cfg['CURVE'], "brainpoolP384r1", "brainpoolP384r1");?>
-      <?=mk_option($openvpnserver_cert_cfg['CURVE'], "brainpoolP512r1", "brainpoolP512r1");?>
-      <?=mk_option($openvpnserver_cert_cfg['CURVE'], "sect409r1", "sect409r1");?>
-      <?=mk_option($openvpnserver_cert_cfg['CURVE'], "sect571r1", "sect571r1");?>
-     </select>
-      </dd>
-      </dl>
-	<blockquote class="inline_help">
-        <p>Choose betweens some curves, I recomend to go for the default curve: secp521r1</p>
-	</blockquote>
- 
+      
  <?endif;?>
     </table>
  </form> 
-
-
-
-
-<?php
-    if (isset($_POST['nav'])) {
-         header("Location: $_POST[nav]");
-    }
-?>
-
-<form id="page-changer" action="" method="post">
-<dt>Available releases except for master release for manually install</dt>
- <select name="nav">
-<?php
-$file = $EASYRSA_VERSION_FILE;
-$handle = @fopen($file, 'r');
-if ($handle) {
-   while (!feof($handle)) {
-      $line = fgets($handle, 4096);
-      $item = explode('|', $line);
-      echo '<option value="' . $item[0] . '">' . $item[0] . '</option>' . "\n";
-    }
-fclose($handle);
-}
-
-?>
-</select>
-    <input type="submit" value="Go" id="submit" />
-        <blockquote class="inline_help">
-        <p>Download the version you like to your installation folder, unzip and rename folder to easy-rsa.</p>
-        <p>The Master or default release is installed from the main page</p>
-        </blockquote>
-
-</form>
-
-
- <form name="openvpnserver_easyrsa_verson" method="POST" action="/update.php" target="progressFrame">
-        <div>
-                <input type="hidden" name="#command" value="/plugins/openvpnserver/scripts/rc.openvpnserver">
-                <input type="hidden" name="#arg[1]" value="get_easy-rsa_version">
-                <button style="font-size:15px">Update the list of easyrsa version <i class="fa fa-download"></i></button>
-                <blockquote class="inline_help">
-                  <p>Download  list of version of easyrsa.</p>
-                </blockquote>
-    </div>
-<hr />
-</form>
-
-
-
 </div>
-
-<script>
-
-window.onload = function(){
- disable(openvpnserver_cert_settings);
-}
-
-$(function() {
-
-    $("#submit").hide();
-
-    $("#page-changer select").change(function() {
-        window.location = $("#page-changer select option:selected").val();
-    })
-
-});
-
-function disable(what)
-{ 
-
-
-
- if (document.openvpnserver_cert_settings.CRYPTO.value=="rsa") 
-	{
-	document.openvpnserver_cert_settings.CURVE.disabled=true; 
-	document.openvpnserver_cert_settings.EASYRSAKEYSIZE.disabled=false; 
-	}
-else 
-	{
-	document.openvpnserver_cert_settings.CURVE.disabled=false; 
-	document.openvpnserver_cert_settings.EASYRSAKEYSIZE.disabled=true; 
-	}
-}
-
-</script>

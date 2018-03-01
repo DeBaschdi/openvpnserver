@@ -10,11 +10,9 @@ PASSPHRASE=$PASSPHRASE_NEW
 INSTALL_ON_BOOT=$INSTALL_ON_BOOT_NEW
 EASYRSAKEYSIZE=$EASYRSAKEYSIZE_NEW
 DISCONNECT_ON_UMOUNT=$DISCONNECT_ON_UMOUNT_NEW
-CRYPTO=$CRYPTO_NEW
-CURVE=$CURVE_NEW
 SERVER_PATH=$SERVER_PATH_NEW
 
- write_cfg_cert
+  write_cfg_cert
 }
 
 #################
@@ -28,8 +26,6 @@ write_cfg_cert()
   echo "INSTALL_ON_BOOT=\"$INSTALL_ON_BOOT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
   echo "EASYRSAKEYSIZE=\"$EASYRSAKEYSIZE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
   echo "DISCONNECT_ON_UMOUNT=\"$DISCONNECT_ON_UMOUNT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-  echo "CRYPTO=$CRYPTO" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-  echo "CURVE=$CURVE" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
   echo "SERVER_PATH=$SERVER_PATH" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
   logger -trc.openvpnserver -plocal7.info -is "Plugin configuration for certs written"
@@ -89,7 +85,7 @@ write_cfg()
   echo "GATEWAY=\"$GATEWAY\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "SUBNET=\"$SUBNET\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "LAN_SUBNET=\"$LAN_SUBNET\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
-  echo "COMP_LZO=\"$COMP_LZO\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "COMP_LZO=\"$COMP_LZO\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg  
   echo "IPP=\"$IPP\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "DHCP_1=\"$DHCP_1\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "TELNET_CONSOLE=\"$TELNET_CONSOLE\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
@@ -174,13 +170,7 @@ echo "local $LOCAL_SERVER_IP" >> $SERVER_PATH/openvpnserver.ovpn
 echo "dev tun" >> $SERVER_PATH/openvpnserver.ovpn
 echo "port $SERVER_PORT" >> $SERVER_PATH/openvpnserver.ovpn
 echo "proto $PROTOCOL" >> $SERVER_PATH/openvpnserver.ovpn
-
-if [ "$CRYPTO" != "ec" ]; then
-	echo "dh $SERVER_PATH/dh.pem" >> $SERVER_PATH/openvpnserver.ovpn
-else
-	echo "dh none" >> $SERVER_PATH/openvpnserver.ovpn
-	echo "ecdh-curve $CURVE" >> $SERVER_PATH/openvpnserver.ovpn
-fi
+echo "dh $SERVER_PATH/dh.pem" >> $SERVER_PATH/openvpnserver.ovpn
 
 if [[ -f "$SERVER_PATH/crl.pem" ]]; then
 	echo "crl-verify $SERVER_PATH/crl.pem" >> $SERVER_PATH/openvpnserver.ovpn
@@ -220,14 +210,7 @@ echo "tls-server" >> $SERVER_PATH/openvpnserver.ovpn
 echo "$VERB" >> $SERVER_PATH/openvpnserver.ovpn
 
 echo "tls-version-min 1.2" >> $SERVER_PATH/openvpnserver.ovpn
-
-if [ "$CRYPTO" != "ec" ]; then
-	echo "tls-cipher TLS-ECDHE-RSA-WITH-AES-256-GCM-SHA384:TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA38:TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-256-CBC-SHA" >> $SERVER_PATH/openvpnserver.ovpn
-else
-	echo "tls-cipher TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384" >> $SERVER_PATH/openvpnserver.ovpn
-fi
-
-
+echo "tls-cipher TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-256-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-256-CBC-SHA:TLS-DHE-RSA-WITH-AES-128-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-128-CBC-SHA" >> $SERVER_PATH/openvpnserver.ovpn
 echo "$TLSENCRYPT $SERVER_PATH/ta.key" >> $SERVER_PATH/openvpnserver.ovpn # NEW 2.4
 
 ####NEW FROM 2.4###  echo "tls-crypt $SERVER_PATH/ta.key" >> $SERVER_PATH/openvpnserver.ovpn
@@ -242,13 +225,6 @@ echo "group users" >> $SERVER_PATH/openvpnserver.ovpn
 if [ "$CIPHER" != "" ]; then
 	echo "$CIPHER" >> $SERVER_PATH/openvpnserver.ovpn
 fi
-
-
-#Add hhis both for RSA & EC 2018-01-07
-##if [ "$CRYPTO" == "ec" ]; then
-##	NCP_chipper=(`echo ${CIPHER[@]} | awk '{print $2}'`)
-##	echo "ncp-ciphers" $NCP_chipper >> $SERVER_PATH/openvpnserver.ovpn
-##fi
 
 if [ "$CLIENT" != "" ]; then
 	echo "client-to-client" >> $SERVER_PATH/openvpnserver.ovpn
@@ -294,13 +270,7 @@ fi
 
 echo "# Notify the client that when the server restarts so it" >> $SERVER_PATH/openvpnserver.ovpn
 echo "# can automatically reconnect." >> $SERVER_PATH/openvpnserver.ovpn
-echo "explicit-exit-notify 1" >> $SERVER_PATH/openvpnserver.ovpn
-#In UDP server mode, send RESTART control channel command to connected clients. The n parameter (default=1) controls client behavior. With n = 1 client will attempt to reconnect to the same server
-
-
-#new 2018-01-05
-	echo "remote-cert-tls client" >> $SERVER_PATH/openvpnserver.ovpn
-	echo "remote-cert-eku "\"TLS Web Client Authentication"\"" >> $SERVER_PATH/openvpnserver.ovpn
+echo "explicit-exit-notify 0" >> $SERVER_PATH/openvpnserver.ovpn
 
 chmod 640 $SERVER_PATH/openvpnserver.ovpn
 }
@@ -321,15 +291,7 @@ openvpnserver_get_subnet()
 
 openvpnserver_get_default_server()
 {
-source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-
-echo $CRYPTO
-
-if [ "$CRYPTO" == "ec" ]; then
-	cp /usr/local/emhttp/plugins/openvpnserver/default_ec.cfg /boot/config/plugins/openvpnserver/openvpnserver.cfg
-else
-	cp /usr/local/emhttp/plugins/openvpnserver/default.cfg /boot/config/plugins/openvpnserver/openvpnserver.cfg
-fi
+cp /usr/local/emhttp/plugins/openvpnserver/default.cfg /boot/config/plugins/openvpnserver/openvpnserver.cfg
 }
 
 openvpnserver_get_vpnserver()
@@ -338,40 +300,12 @@ openvpnserver_get_vpnserver()
    echo $VPN_SERVER
 }
 
-
-
-openvpnserver_get_easy_version()
-{
-source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-echo $SERVER_PATH
-echo "--- Available versions ----" > $SERVER_PATH/easyrsa_versions_full_path.txt
-curl  --fail --silent https://github.com/OpenVPN/easy-rsa/releases | grep zip |  grep download/ | cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_versions_full_path.txt
-curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip |  grep archive/ | cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_versions_full_path.txt
-EASYRSA_FULL_PATH_VERSIONS=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/releases | grep zip |  grep download/ | cut -d\" -f2 | sed 's#^#https://github.com#g' | grep -v "sig" )
-}
-
-openvpnserver_get_current_commit_date()
-{
-COMMIT_DATE=$((curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $5 }'  | awk -F .zip '{ print $1 }'; (echo " / " ) ;curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep /relative-time | awk -F T '{ print $1 }' |  sed 's/.*datetime="//') | tr '\n' '\t')
-echo $COMMIT_DATE
-}
-
 openvpnserver_get_easy()
 {
 source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 cd $SERVER_PATH
-
-(echo "Installed version: "; curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | \
-grep .zip | grep archive | awk -F / '{ print $5 }' | \
-awk -F .zip '{ print $1}' ; echo "was comitted on github then : "\
-; curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | \
-grep /relative-time | awk -F T '{ print $1 }' |  sed 's/.*datetime="//') \
-| tr '\n' '\t' > $SERVER_PATH/easyrsa_latest_commit.txt
-
-#curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $5 }' | awk -F .zip '{ print $1}') | tr '\n' '\t' > $SERVER_PATH/easyrsa_latest_commit.txt
-#curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip |  grep archive/ | cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_latest_commit.txt
 
 EASYRSA_DL_VERSION=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip | grep archive |  cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig")
 echo $EASYRSA_DL_VERSION
@@ -384,8 +318,6 @@ wget $EASYRSA_DL_VERSION
 logger -trc.openvpnserver -plocal7.info -is  "Deleting the client folder and files when new easyrsa are insatlled."
 echo "Deleting the client folder and files when new easyrsa are insatlled."
 rm -vrf $SERVER_PATH/clients/
-
-rm -f /var/local/emhttp/plugins/openvpnserver/add_client.log
 
 rm -vrf easy-rsa
 unzip -o $EASYRSA_FILENAME
@@ -416,7 +348,7 @@ echo "Revoking client: " $1
 
 cd $SERVER_PATH/easy-rsa/easyrsa3
 
-/usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$1/"$1"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+/usr/bin/expect <<eof | tee /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
 	spawn ./easyrsa revoke $1
 	expect "*Continue with revocation:"
@@ -426,7 +358,7 @@ cd $SERVER_PATH/easy-rsa/easyrsa3
         expect eof
 eof
 
-/usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$1/"$1"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+/usr/bin/expect <<eof | tee /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
 	spawn ./easyrsa gen-crl
 	expect "Enter pass phrase*"
@@ -456,7 +388,7 @@ client=$2
 
 ## check if this client package already exists
 if grep $client $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt; then
-   echo "$client alredy exist. try a different name!" > $SERVER_PATH/clients/$client/"$client"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+   echo "$client alredy exist. try a different name!" >> /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
    echo "$client alredy exist. try a different name!"
    exit 1
 fi
@@ -468,7 +400,7 @@ chmod 755 $SERVER_PATH/clients/$client
 cd $SERVER_PATH/easy-rsa/easyrsa3
 
 
-/usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$client/"$client"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
 	spawn ./easyrsa build-client-full $client nopass
 	expect "Enter pass phrase*"
@@ -476,13 +408,17 @@ cd $SERVER_PATH/easy-rsa/easyrsa3
 expect eof
 eof
 
+
 cp $SERVER_PATH/easy-rsa/easyrsa3/pki/issued/$client.crt $SERVER_PATH/clients/$client
-cp $SERVER_PATH/easy-rsa/easyrsa3/ta.key $SERVER_PATH/clients/$client
+cp $SERVER_PATH/easy-rsa/easyrsa3/ta.key $SERVER_PATH/clients/$client	
 cp $SERVER_PATH/easy-rsa/easyrsa3/pki/ca.crt $SERVER_PATH/clients/$client
 cp $SERVER_PATH/easy-rsa/easyrsa3/pki/private/$client.key $SERVER_PATH/clients/$client
 
 PORT=$SERVER_PORT
+#LOG_DIR="/var/log/openvpnserver_cert"
 
+
+#REMOTE_ADDR=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip)
 INTERNET_IP=$(/var/local/emhttp/plugins/openvpnserver/check-my-ip.sh)
 
 if [[ $CANONICAL != "" ]]; then
@@ -491,20 +427,20 @@ fi
 
 if [ "$COMP_LZO" == "compress lz4-v2" ]; then
 	COMP_LZO_TMP=""
-else
-	COMP_LZO_TMP=$COMP_LZO
+else	
+	COMP_LZO_TMP=$COMP_LZO 
 fi
 
-echo "creating client ovpn"
 cat > $SERVER_PATH/clients/$client/$client.ovpn <<END
 remote $INTERNET_IP
-tls-client
 $CIPHER
 $HASH_ALGO
 client
 dev tun
 proto $PROTOCOL
 port $PORT
+resolv-retry infinite
+tls-client
 nobind
 persist-key
 persist-tun
@@ -512,24 +448,12 @@ ca ca.crt
 cert $client.crt
 key $client.key
 $TLSENCRYPT ta.key
-resolv-retry infinite
+remote-cert-tls server
+tls-cipher TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-256-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-256-CBC-SHA:TLS-DHE-RSA-WITH-AES-128-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-128-CBC-SHA
 $COMP_LZO_TMP
 $VERB
-mute-replay-warnings
-tls-version-min 1.2
-remote-cert-tls server
-remote-cert-eku "TLS Web Server Authentication"
 route-delay 2
 END
-
-
-if [ "$CRYPTO" != "ec" ]; then
-        echo "tls-cipher TLS-ECDHE-RSA-WITH-AES-256-GCM-SHA384:TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA38:TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-256-CBC-SHA" >> $SERVER_PATH/clients/$client/$client.ovpn
-else
-        echo "tls-cipher TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384" >> $SERVER_PATH/clients/$client/$client.ovpn
-fi
-
-
 #*****END ****
 
 
@@ -550,7 +474,7 @@ cd $SERVER_PATH/clients/$client
 #       Latest versions of Openvpn supports inline certs and keys
 #       so you have one client script, instead of script plus 4 keys and certs
 #######################################################################
-#echo "you got only one client script, instead of script plus 4 keys and certs" | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
+echo "you got only one client script, instead of script plus 4 keys and certs" | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 ca="ca.crt"
 cert=$client.crt
 key=$client.key
@@ -648,7 +572,7 @@ cd $SERVER_PATH/clients/$client
 		echo "" >> README.txt
 		echo "Your certificate is now installed on iOS and it is ready to be used by the OpenVPN app." >> README.txt
 		echo "" >> README.txt
-	    	echo "e-mail the ovpn file to yourself as well. The e-mail app on iOS will allow you to import this configuration to the OpenVPN app by clicking on the file." >> README.txt 
+	    echo "e-mail the ovpn file to yourself as well. The e-mail app on iOS will allow you to import this configuration to the OpenVPN app by clicking on the file." >> README.txt 
 		echo "The OpenVPN app will show your imported configuration. Confirm by tapping the  green + icon." >> README.txt
 		echo "Next step, select the certificate to use with this profile. Here you will select the certificate we imported into iOS in the previous step." >> README.txt
 
@@ -673,8 +597,8 @@ openvpnserver_renew_server_cert()
 source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
-rm -f $SERVER_PATH/openvpnservercert.out
-rm -f /var/local/emhttp/plugins/openvpnserver/add_client.log
+rm -f /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+
 RENEW_CERT="yes"
 
 #Regenerate all cert and start the a fresh server.
@@ -683,22 +607,22 @@ echo "Regenerate all cert and start the a fresh server."
 echo ""
 echo "WARNING!!!"
 echo ""
-echo "You are about to remove the EASYRSA_PKI...."
+echo "You are about to remove the EASYRSA_PKI at: /mnt/appdata/myVPNserver_test5/easy-rsa/easyrsa3/pki"
 echo "and initialize a fresh PKI here."
 logger -trc.openvpnserver -plocal7.info -is  "Regenerate all cert and start the a fresh server."
 logger -trc.openvpnserver -plocal7.info -is  ""
 logger -trc.openvpnserver -plocal7.info -is  "WARNING!!!"
 logger -trc.openvpnserver -plocal7.info -is  ""
-logger -trc.openvpnserver -plocal7.info -is  "You are about to remove the EASYRSA_PKI..."
+logger -trc.openvpnserver -plocal7.info -is  "You are about to remove the EASYRSA_PKI at: /mnt/appdata/myVPNserver_test5/easy-rsa/easyrsa3/pki"
 logger -trc.openvpnserver -plocal7.info -is  "and initialize a fresh PKI here."
 
 
 logger -trc.openvpnserver -plocal7.info -is  "Deleting the client folder and files."
-rm -rf $SERVER_PATH/clients/
+rm -r $SERVER_PATH/clients/
 
 cd $SERVER_PATH/easy-rsa/easyrsa3
 
-/usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
         set timeout 5
         spawn ./easyrsa init-pki
         expect "  Confirm removal:"
@@ -717,45 +641,35 @@ openvpnserver_create_server_cert()
 source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
-rm -f $SERVER_PATH/openvpnservercert.out
+#rm -f /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
 
 #LOG_DIR="/var/log/openvpnserver_cert"
 cd $SERVER_PATH/easy-rsa/easyrsa3
 
 echo "SIZE : $EASYRSAKEYSIZE"
-#sed -i '/set_var EASYRSA_KEY_SIZE\t/d' ./easyrsa
-#sed -i "/set_var EASYRSA_ALGO\t\trsa/a \\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" ./easyrsa
-
-
 sed -i '/set_var EASYRSA_KEY_SIZE\t/d' ./easyrsa
-sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};n;a \\\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" easyrsa
+sed -i "/set_var EASYRSA_ALGO\t\trsa/a \\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" ./easyrsa
 
-sed -i '/set_var EASYRSA_ALGO\t/d' ./easyrsa
-sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};a \\\tset_var EASYRSA_ALGO\t\t${CRYPTO}" easyrsa
-
-sed -i '/set_var EASYRSA_CURVE\t/d' ./easyrsa
-sed -i "/set_var EASYRSA_KEY_SIZE/!{p;d;};a \\\tset_var EASYRSA_CURVE\t\t${CURVE}" easyrsa
-
+#END
 if [ "$RENEW_CERT" != "yes" ]; then
-echo "Start init-pki ....."
 ./easyrsa init-pki
 fi
 
-/usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
 	set timeout 5
 	spawn ./easyrsa build-ca
-	expect "Enter New CA Key Passphrase:"
+	expect "Enter PEM pass phrase:"
 	send "$PASSPHRASE\r"
-	expect "Re-Enter New CA Key Passphrase:"
+	expect "Verifying*"
 	send "$PASSPHRASE\r"
 	expect "Common Name*"
-	send "server\r"
+	send "\r"
 expect eof
 eof
 
 sleep 1
 
-/usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
+/usr/bin/expect <<eof | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
 	set timeout 5
 	spawn ./easyrsa build-server-full server nopass
 	expect "Enter pass phrase*"
@@ -765,31 +679,20 @@ eof
 
 sleep 1
 
-if [ $CRYPTO == "rsa" ];then
-	./easyrsa gen-dh |& tee -a $SERVER_PATH/openvpnservercert.out
-fi
-
-openvpn --genkey --secret ta.key | tee -a $SERVER_PATH/openvpnservercert.out
+./easyrsa gen-dh |& tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
+openvpn --genkey --secret ta.key | tee -a /var/local/emhttp/plugins/openvpnserver/openvpnservercert.out
 
 RENEW_CERT=""
 
 cp $SERVER_PATH/easy-rsa/easyrsa3/pki/ca.crt $SERVER_PATH
 cp $SERVER_PATH/easy-rsa/easyrsa3/pki/issued/server.crt $SERVER_PATH
-
-if [ $CRYPTO == "rsa" ];then
-	cp $SERVER_PATH/easy-rsa/easyrsa3/pki/dh.pem $SERVER_PATH
-fi
-
+cp $SERVER_PATH/easy-rsa/easyrsa3/pki/dh.pem $SERVER_PATH
 cp $SERVER_PATH/easy-rsa/easyrsa3/pki/private/server.key $SERVER_PATH
 cp $SERVER_PATH/easy-rsa/easyrsa3/ta.key $SERVER_PATH
 
 chmod 400  $SERVER_PATH/ca.crt
 chmod 400  $SERVER_PATH/server.crt
-
-if [ $CRYPTO == "rsa" ];then
-	chmod 400 $SERVER_PATH/dh.pem
-fi
-
+chmod 400  $SERVER_PATH/dh.pem
 chmod 400  $SERVER_PATH/server.key
 chmod 400  $SERVER_PATH/ta.key
 
@@ -839,7 +742,7 @@ if [ -f $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt ]; then
       then
         echo "NO CLIENTS CREATED YET"
     else
-       echo "$VIEW_VALID_USER"
+       echo "$VIEW_VALID_USER" 
     fi
 fi
 }
@@ -872,7 +775,6 @@ fi
 openvpnserver_iptables_add() {
 source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 
-#NIC=$(ip route | grep default | sed -e "s/^.*dev.//" -e "s/.proto.*//" | awk '{print $1'})
 NIC=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
 echo $NIC
 IPRULES1="iptables -t nat -A POSTROUTING -s $NETWORK/24 -o $NIC -j MASQUERADE"
@@ -921,16 +823,10 @@ case "$1" in
   'writeconf')
     write_openvpn_conf
     ;;
-  'get_easy-rsa_version')
-    openvpnserver_get_easy_version
-    ;;
   'download_easy-rsa')
     openvpnserver_get_easy
     ;;
-  'commit_date_easyrsa')
-    openvpnserver_get_current_commit_date
-    ;;
-'create_server_cert')
+  'create_server_cert')
     openvpnserver_create_server_cert
     ;;
   'renew_server_cert')
@@ -986,5 +882,5 @@ case "$1" in
     ;;
 *)
 
-    echo "usage $0 start|stop|restart|commit_date_easyrsa|download_easy-rsa|create_server_cert|renew_server_cert|add_client 'name'|add_client 'name' 'password|revoke_client 'name'|view_valid_user|view_online_user|view_revoked_user"
+    echo "usage $0 start|stop|restart|download_easy-rsa|create_server_cert|renew_server_cert|add_client 'name'|add_client 'name' 'password|revoke_client 'name'|view_valid_user|view_online_user|view_revoked_user"
 esac
