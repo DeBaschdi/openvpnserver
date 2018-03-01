@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2018.03.01">
+<!ENTITY version   "2018.03.01a">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,7 +30,7 @@
 
 <CHANGES>
 ##&name;
-###2018.03.01
+###2018.03.01a
 - Added support for Elliptic Curve crypto!
 - After changing to EC or still using RSA you must.
 - Re save settings on page "server config". There is now different default settings for EC & RSA.
