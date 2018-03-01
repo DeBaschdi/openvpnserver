@@ -1,0 +1,221 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "openvpnserver">
+<!ENTITY author    "peter_sm">
+<!ENTITY plgauthor    "petersm1">
+<!ENTITY version   "2018.01.27">
+<!ENTITY launch    "Settings/&name;">
+<!ENTITY gitURL    "https://github.com/&plgauthor;">
+<!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/&plgauthor;/openvpnserver/master/openvpn_server_x64.plg">
+<!ENTITY pkgURL	 "https://mirrors.slackware.com/slackware/">
+<!ENTITY pkgs 	    "/boot/packages/">
+<!ENTITY plugin	 "/boot/config/plugins/&name;">
+<!ENTITY emhttp	 "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN  name="&name;"
+         author="&author;"
+         plgauthor="&plgauthor;"
+         version="&version;"
+	 gitURL="&gitURL;"
+	 gitpkgURL="&gitpkgURL;"
+	 launch="&launch;"
+         pluginURL="&pluginURL;"
+	 pkgURL="&pkgURL;"
+	 pkgs="&pkgs;"
+	 plugin="&plugin;"
+	 emhttp="&emhttp;">
+
+<CHANGES>
+##&name;
+###2018.01.27
+- Changed thew way to DL easyrsa, now it will DL the default branch instead of force DL the master branch.
+###2017.12.23
+- Update of Tcl packages to 8.6.8
+###2017.12.18
+-  New function to retrieve name of Ethernet Network interface
+###2017.10.29
+- Update of expect packages to 5.45.3
+###2017.10.14c
+- Now the webpage is locked during generate of the server certificates!! 
+###2017.10.08
+- New tab for download of client's config file !
+###2017.09.29
+- Update of OpenVPN packages to 2.4.4
+###2017.08.14a
+- Moved slackware packages to git repository
+###2017.08.14
+- Update of Tcl packages to 8.6.7
+###2017.08.09
+- Added forum support link
+###2017.08.06
+- Added launch link
+###2017.06.30
+- Update DL link to --> https://mirrors.slackware.com/slackware from http://mirrors.slackware.com/slackware
+###2017.06.25
+- Update of OpenVPN packages to 2.4.3
+###2017.05.28
+- Update of Tcl packages to 8.6.6
+###2017.04.09c
+- Update of OpenVPN packages to 2.4.1
+###2016.12.31
+- Update of OpenVPN packages to 2.4.0 !
+- Updated list of selectable Encryption Ciphers.
+- The list have the new cipher AEAD (GCM) data channel cipher.
+- Update settings for compression. Now including the new LZ4 compression, which is slicker and faster.
+- Added OpenDNS to DHCP options.
+- Added a button to restart OpenVPN server.
+- Added tls-crypt feature. This will also encrypt the client (and server) certificates that usually contain information that can be traced back to a person and/or machine.
+- Small GUI updates.
+###2016.07.31b
+- Now the client folder is deleted when regenerate new certs.
+###2016.07.31a
+- update settings for LZO compression (Adaptive is now default). When updating the server settings you may also need to crete new client files.
+- Added Cipher AES-512-CBC
+###2016.07.31
+- Moved ipp.txt to flash drive.
+###2016.07.19
+- Some GUI updates.
+###2016.07.16a
+- Bug fix.
+###2016.07.16
+- New function added: Now you can regenerate the server cert and start a fresh server.
+- Some GUI updates.
+###2016.07.15b
+- Minor small fixes
+###2016.07.15
+- Updates of the inline help
+###2016.07.14
+- New settings for RSA key size so user can chose between 2048 or 4096 bits size.
+- Implemented some help text to be used with unRAID built in help function.
+- Added 2 new settings to server/client config file --° --tls-version-min 1.2 and some standard 1.2 tls-cipher. User need to create/update Server Configuration to get the new updates and als0 generate new client files.
+- Using unRAID /var/local/emhttp/network.ini for variables.
+- Added function to reset to defaults value for Server Configuration.
+###2016.06.30
+- Update check for downloaded easy-rsa
+###2016.06.15
+- Update the logic for the new unRAID network config file (bridge/bonding etc...)
+###2016.05.14
+- Update of OpenVPN packages to 2.3.11
+###2016.03.21f
+- Updated tcl packages
+- Fixed symlink to /etc/rc.d/
+###2016.03.05b
+- Add symlink to /etc/rc.d/
+- Update of expect packages to 5.45
+- Update of tcl packages to 8.6.5
+- Added OpenVPN's port-share
+- Set client inline certificate file as default 
+###2015.12.23
+- Update of OpenVPN packages to 2.3.9
+###2015.11.18
+- Update of TCL packages
+###2015.09.28a
+- Changed Download location for slack packages
+###2015.09.01
+- Updated support for version 6.1
+###2015.08.14b
+- Small fix for the remove section in the plugin
+###2015.08.14
+-Added support for version 6.1
+###2015.05.22b
+-Fixed logic when setting up mknod.
+###2015.03.05
+-Added command 'modprobe tun' to solve issues some users have.
+###2015.02.28
+-Added Release notes
+###2015.01.25
+-Previous Releas
+</CHANGES>
+
+<!--
+2014-12-25 - Initial Release
+openvpnserver version 3 64Bit with easyrsa V3
+-->
+
+<FILE Name="&pkgs;tcl-8.6.8-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/tcl-8.6.8-x86_64-1.txz</URL>
+<MD5>8951ce3fca2d6e14dfa97b400937c60b</MD5>
+</FILE>
+
+<FILE Name="&pkgs;expect-5.45.3-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/expect-5.45.3-x86_64-1.txz</URL>
+<MD5>0ee1e60f41e52588d403821ae40364c1</MD5>
+</FILE>
+
+<FILE Name="&pkgs;openvpn-2.4.4-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/openvpn-2.4.4-x86_64-1.txz</URL>
+<MD5>f949c1231ce8f42ac4ef613483364e60</MD5>
+</FILE>
+
+<!--
+get from github as tarball
+-->
+<FILE Name="&plugin;/&name;-&version;.tar.gz">
+<URL>"https://github.com/&plgauthor;/openvpnserver/archive/&version;.tar.gz"</URL>
+</FILE>
+
+<!--
+The 'install' script.
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+mkdir -p /dev/net
+if [ ! -c /dev/net/tun ]; then
+	mknod /dev/net/tun c 10 200
+fi
+modprobe tun
+echo 1 > /proc/sys/net/ipv4/ip_forward
+mkdir -p /var/run/openvpnserver/
+ 
+if [ ! -d &emhttp; ]; then
+	mkdir -p &emhttp;
+fi
+
+tar -zxf &plugin;/&name;-&version;.tar.gz --strip=1 -C &emhttp;/
+find &plugin; -type f -iname "*.tar.gz" ! -iname "&name;-&version;.tar.gz" -delete
+chmod 0770 &emhttp;/event/*
+chmod 0770 &emhttp;/scripts/*
+
+cp -nr &emhttp;/&name; /boot/config/plugins
+ln -sf /usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver /etc/rc.d/
+</INLINE>
+</FILE>
+
+<!--
+The 'remove' script.
+-->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+&emhttp;/scripts/rc.&name; stop
+rm -rf &emhttp;
+rm -f &plugin;/&name;-&version;.tar.gz
+# Cleanup previous plugin installation
+rm -rf /var/local/emhttp/plugins/&name;
+rm -rf /var/run/&name;
+rm -rf /var/log/&name;.log
+rm -rf /var/log/plugins/&name;
+</INLINE>
+</FILE>
+
+<FILE Name="/var/local/emhttp/plugins/openvpnserver/check-my-ip.sh" Mode="0770">
+<INLINE>
+<![CDATA[
+# Check my IP script
+#!/bin/bash
+#wget http://ipecho.net/plain -O - -q ; echo
+#curl icanhazip.com
+curl -s --max-time 15 --silent icanhazip.com
+]]>
+</INLINE>
+</FILE>
+
+<FILE Name="/var/log/plugins/openvpnserver">
+<INLINE>
+<![CDATA[
+]]>
+</INLINE>
+</FILE>
+</PLUGIN>
