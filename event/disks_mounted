@@ -1,8 +1,0 @@
-#!/bin/sh
-source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-
-if [ "$INSTALL_ON_BOOT" = "enable" ]; then	
-	 # Start OpenVPN server
-	logger "Starting OpenVPN Server"
-	/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver start | logger
-fi
