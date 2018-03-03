@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2018.03.03a">
+<!ENTITY version   "2018.03.03b">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,9 @@
 
 <CHANGES>
 ##&name;
+###2018.03.03b
+- Update of OpenVPN packages to 2.4.5
+- Added a link to OpenVPN Overview of changes.
 ###2018.03.03a
 - Added support for Elliptic Curve crypto!
 - After changing to EC or still using RSA you must....
@@ -105,9 +108,9 @@ openvpnserver version 3 64Bit with easyrsa V3
 <MD5>2d5a3ccc7b670e7de834f37daef610d1</MD5>
 </FILE>
 
-<FILE Name="&pkgs;openvpn-2.4.4-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/openvpn-2.4.4-x86_64-1.txz</URL>
-<MD5>f949c1231ce8f42ac4ef613483364e60</MD5>
+<FILE Name="&pkgs;openvpn-2.4.5-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/openvpn-2.4.5-x86_64-1.txz</URL>
+<MD5>f9f05c2fa622b6bb2d06733687748a40</MD5>
 </FILE>
 
 <!--
