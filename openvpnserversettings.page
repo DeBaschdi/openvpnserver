@@ -77,7 +77,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
       <?=mk_option($openvpnserver_cfg['CLIENT'], "", "No");?>
 	  </select>
 	</dd>
-  	</dl>
+	</dl>
 	<blockquote class="inline_help">
 			<p>Enable this directive to allow different clients to be able to "see" each other. By default, clients will only see the server.</p>
 	</blockquote>
@@ -90,9 +90,9 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
       <?=mk_option($openvpnserver_cfg['DHCP_1'], "OPENDNS", "OpenDNS");?>
       <?=mk_option($openvpnserver_cfg['DHCP_1'], "dhcp-option DNS", "DNS Local gateway");?>
       </select>
-	  </dd>
+	 </dd>
 	 </dl>
-	  	<blockquote class="inline_help">
+		<blockquote class="inline_help">
 			<p>Google DNS -- Uses googles DNS (8.8.8.8 / 8.8.4.4)</p>
 			<p>OpenDNS -- Uses OpenDNS (208.67.222.222 / 208.67.222.220)</p>
 			<p>DNS Local gateway -- Set primary domain name server	  address to your gateway.</p>
@@ -128,19 +128,16 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-256-CBC", "AES-256-CBC  (256 bit key, 128 bit block)");?>
 	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-192-CBC", "AES-192-CBC  (192 bit key, 128 bit block)");?>
 	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-128-CBC", "AES-128-CBC  (128 bit key, 128 bit block)");?>
-	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-256-GCM", "AES-256-GCM (256 bit key, 128 bit block, TLS client/server mode only)");?>
-	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-192-GCM", "AES-192-GCM (192 bit key, 128 bit block, TLS client/server mode only)");?>
-	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-128-GCM", "AES-128-GCM (128 bit key, 128 bit block, TLS client/server mode only)");?>
-	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher CAMELLIA-256-CBC", "CAMELLIA-256-CBC  (256 bit key, 128 bit block)");?>
-	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher CAMELLIA-192-CBC", "CAMELLIA-192-CBC  (192 bit key, 128 bit block)");?>
-	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher CAMELLIA-128-CBC", "CAMELLIA-128-CBC  (128 bit key, 128 bit block)");?>
+	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-256-GCM", "AES-256-GCM (256 bit key)");?>
+	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-192-GCM", "AES-192-GCM (192 bit key)");?>
+	  <?=mk_option($openvpnserver_cfg['CIPHER'], "cipher AES-128-GCM", "AES-128-GCM (128 bit key)");?>
 	  <?=mk_option($openvpnserver_cfg['CIPHER'], "", "None");?>
       </select>
 	  </dd>
 	</dl>
 	<blockquote class="inline_help">
-	  	<p>Select a cryptographic cipher.This config item will be copied to the client config file as well.</p>
-		<p>Changing this after have created client, new client needs to be created. I've chosen <span class="red" style="font-weight: bold">AES-256-CBC</span> for Hardened OpenVPN</p>
+		<p>Select a cryptographic cipher.This config item will be copied to the client config file as well.</p>
+		<p>Changing this after have created client, new client needs to be created. I've chosen <span class="red" style="font-weight: bold">AES-256-GCM</span> for Hardened OpenVPN</p>
 		<p>GCM data channel cipher support. This has a smaller crypto overhead than the CBC packet format, (e.g. 20 bytes per packet for AES-128-GCM instead of 36 bytes per packet for AES-128-CBC + HMAC-SHA1).</p>
 	</blockquote>
       
@@ -193,17 +190,23 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
       <dd><select name="GATEWAY" id="GATEWAY" size="1" title="If you set this to 'No', you need to set 'Push LAN subnet to the clients' to 'Yes'">
       <?=mk_option($openvpnserver_cfg['GATEWAY'], "redirect-gateway def1", "redirect-gateway def1");?>
 	  <?=mk_option($openvpnserver_cfg['GATEWAY'], "redirect-gateway local def1", "redirect-gateway local def1");?>
+      <?=mk_option($openvpnserver_cfg['GATEWAY'], "redirect-gateway bypass-dhcp", "redirect-gateway bypass-dhcp");?>
+      <?=mk_option($openvpnserver_cfg['GATEWAY'], "redirect-gateway bypass-dns", "redirect-gateway bypass-dns");?>
       <?=mk_option($openvpnserver_cfg['GATEWAY'], "Disable", "No");?>
       </select>
-  	  </dd>
+      </dd>
     </dl>
 	<blockquote class="inline_help">
-       <p>By default, when an OpenVPN client is active, only network traffic to and from the OpenVPN server site will pass over the VPN. General web browsing, for example, will be accomplished with direct connections that bypass the VPN.</p>
-	   <p>In certain cases this behavior might not be desirable -- you might want a VPN client to tunnel all network traffic through the VPN, including general internet web browsing. While this type of VPN configuration will exact a performance penalty on the client, it gives the VPN administrator more control over security policies when a client is simultaneously connected to both the public internet and the VPN at the same time.</p>
-   	   <p>redirect-gateway def1: Tell your client to route all traffic through the vpn tunnel.</p>
-	   <p>redirect-gateway local def1: If your VPN setup is over a wireless network, where all clients and the server are on the same wireless subnet.</p>
-	   <p>If you set this to 'No', you might try to set 'Push LAN subnet to the clients' to 'Yes</p>
-	</blockquote>       
+		<p>By default, when an OpenVPN client is active, only network traffic to and from the OpenVPN server site will pass over the VPN. General web browsing, for example, will be accomplished with direct connections that bypass the VPN.</p>
+		<p>In certain cases this behavior might not be desirable -- you might want a VPN client to tunnel all network traffic through the VPN, including general internet web browsing. While this type of VPN configuration will exact a performance penalty on the client, it gives the VPN administrator more control over security policies when a client is simultaneously connected to both the public internet and the VPN at the same time.</p>
+		<p>redirect-gateway def1: Tell your client to route all traffic through the vpn tunnel. Use this flag to override the default gateway by using 0.0.0.0/1 and 128.0.0.0/1 rather than 0.0.0.0/0. This has the benefit of overriding but not wiping out the original default gateway.</p>
+		<p>redirect-gateway local def1: If your VPN setup is over a wireless network, where all clients and the server are on the same wireless subnet.</p>
+		<p>local -- Add the local flag if both OpenVPN servers are directly connected via a common subnet, such as with wireless.</p>
+		<p>bypass-dhcp -- Add a direct route to the DHCP server (if it is non-local) which bypasses the tunnel (Available on Windows clients, may not be available on non-Windows clients).</p>
+		<p>bypass-dns -- Add a direct route to the DNS server(s) (if they are non-local) which bypasses the tunnel (Available on Windows clients, may not be available on non-Windows clients).</p>
+		<p>If you set this to 'No', you might try to set 'Push LAN subnet to the clients' to 'Yes</p>
+
+</blockquote>       
 
     <dl>
       <dt>Topology subnet</dt>
@@ -276,7 +279,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 	   <p> 9 AND 15 is extremely verbose</p>
 	</blockquote>  
 
- 	<dl>
+      <dl>
       <dt>OpenVPN Port-Share</dt>
       <dd>
       <input type="text" style="width:25%" maxlength="20" name="IP_PORT_SHARE" id="IP_PORT_SHARE" value="<?=$openvpnserver_cfg['IP_PORT_SHARE'];?>" title="Example 10.8.1.20 443      To be extra sneaky/careful with an OpenVPN server, take advantage of OpenVPN's port-share capability that allows it to pass any non-OpenVPN traffic to another IP behind the firewall">
@@ -305,12 +308,12 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
  <form name="openvpnserver_installdef" method="POST" action="/update.php" target="progressFrame">
 	<div>
 		<input type="hidden" name="#command" value="/plugins/openvpnserver/scripts/rc.openvpnserver">
-         <input type="hidden" name="#arg[1]" value="default_value_server">
-		 <button style="font-size:15px">Restore to default values <i class="fa fa-copy"></i></button>
-	     <blockquote class="inline_help">
-		  <p> After you have restored to default values you also need to save configuration.</p>
+                <input type="hidden" name="#arg[1]" value="default_value_server">
+		<button style="font-size:15px">Restore to default values <i class="fa fa-copy"></i></button>
+		<blockquote class="inline_help">
+		<p> After you have restored to default values you also need to save configuration.</p>
 		</blockquote> 
-    </div>
+       </div>
 <hr />     
 </form>
 <?endif;?>

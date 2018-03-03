@@ -4,6 +4,8 @@ $DISCONNECT_ON_UMOUNT = $_POST['DISCONNECT_ON_UMOUNT'];
 $EASYRSAKEYSIZE = $_POST['EASYRSAKEYSIZE'];
 $SERVER_PATH = $_POST['SERVER_PATH'];
 $PASSPHRASE = $_POST['PASSPHRASE'];
+$CRYPTO = $_POST['CRYPTO'];
+$CURVE = $_POST['CURVE'];
 
 $arguments = "";
 $arguments .= "INSTALL_ON_BOOT_NEW=\"$INSTALL_ON_BOOT\"\n";
@@ -11,6 +13,8 @@ $arguments .= "DISCONNECT_ON_UMOUNT_NEW=\"$DISCONNECT_ON_UMOUNT\"\n";
 $arguments .= "EASYRSAKEYSIZE_NEW=\"$EASYRSAKEYSIZE\"\n";
 $arguments .= "SERVER_PATH_NEW=\"$SERVER_PATH\"\n";
 $arguments .= "PASSPHRASE_NEW=\"$PASSPHRASE\"\n";
+$arguments .= "CRYPTO_NEW=\"$CRYPTO\"\n";
+$arguments .= "CURVE_NEW=\"$CURVE\"\n";
 
 echo "Please wait while updating configuration for certs and Misc...";
 

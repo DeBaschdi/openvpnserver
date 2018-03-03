@@ -1,6 +1,6 @@
 Menu="NetworkServices"
 Icon="openvpnserver.png"
-Version="2018.01.27"
+Version="2018.03.01"
 Author="Peter_sm"
 Type="xmenu"
 Title="OpenVPN Server TUN mode"
@@ -26,24 +26,33 @@ $internet_myip = shell_exec("/var/local/emhttp/plugins/openvpnserver/check-my-ip
 $LAN_IP = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver get_gw");
 $VPN_SERVER_IP = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver get_vpnserver");
 $NW = $openvpnserver_cfg['NETWORK'];
-$SERVER_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "openvpnserver.ovpn";
+$SERVER_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "/openvpnserver.ovpn";
 $CHECK_IPTABELS_NAT = shell_exec("iptables -t nat -L POSTROUTING -n -v --line-numbers | grep '$NW'");
 $check_netstat = shell_exec("ip route show");
 $CHECKFOLDERVPNTMP = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver checkfolder");
 $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
+$CRYPTO_tmp = $openvpnserver_cert_cfg['CRYPTO'];
+$CRYPTO = strtoupper($CRYPTO_tmp);
+$SERVERCONFIGPATH = $openvpnserver_cert_cfg['SERVER_PATH'];
+$EASYRSA_VERSION_INSTALLED = @file_get_contents("$SERVERCONFIGPATH/installed_easyrsa.txt");
+$EASYRSA_LATEST_COMMIT = @file_get_contents("$SERVERCONFIGPATH/easyrsa_latest_commit.txt");
+$LATEST_COMMIT = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver commit_date_easyrsa");
 
 
  if (file_exists('/var/local/emhttp/plugins/openvpnserver/add_client.log'))
 	{$add_client_log = file_get_contents('/var/local/emhttp/plugins/openvpnserver/add_client.log');} 
+
  if (file_exists('/var/log/openvpnserver-status.log')) 
     {$openvpnststus_log = file_get_contents('/var/log/openvpnserver-status.log');} 
+
+if (file_exists("$SERVERCONFIGPATH/openvpnservercert.out"))
+    {$openvpnserver_certlog = file_get_contents("$SERVERCONFIGPATH/openvpnservercert.out");} 
 
  if (file_exists('/var/log/openvpnserver.log')) 
     {$openvpn_log = file_get_contents('/var/log/openvpnserver.log');} 
 
-if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out'))
-    {$openvpn_certlog = file_get_contents('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out');}
 ?>
+
 <div>
 <br>    
 
@@ -54,7 +63,7 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
                        <span class="red"><b>Generating cert for the server is still running, please wait !!! refresh the page for progress updates.
 			<br>    
 			<br>    
-		       <dt><textarea class="tooltip" title="OpenVPN cert log" wrap="hard" readonly="yes" style="width: 800px; height: 550px;color: green;font-size: 8pt"><?php echo $openvpn_certlog; ?></textarea></dt>
+		       <dt><textarea class="tooltip" title="OpenVPN cert log" wrap="hard" readonly="yes" style="width: 800px; height: 550px;color: green;font-size: 8pt"><?php echo $openvpnserver_certlog; ?></textarea></dt>
 		   </br>
 		  </dl>
 		<?endif;?>
@@ -85,11 +94,13 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
     <table class="tablesorter">      
       <tr>
       <thead>
-            <th>WAN IP</th>	
+			<th>WAN IP</th>	
 			<th>unRAID server IP</th>
 			<th>LAN Gateway</th>
 			<th>VPN Server IP</th>
-			<th>OpenVPN Version</th>
+			<th>Certificate type</th>	
+			<th>OpenVPN / Easyrsa Version</th>
+			<th>Current EasyRSA on github / Commit date</th>
 	   </thead>
       </tr>
     <tr style="font-weight:bold; background:#FFFFFF;">
@@ -106,8 +117,14 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
             <span class="green-text"><?=$VPN_SERVER_IP?></span>
         </td>
 	<td>         
-            <span class="green-text"><?=$OPEN_VPN_INSTALLED?></span>
+            <span class="green-text"><?=$CRYPTO?></span>
+        </td>
+	<td>         
+            <span class="green-text"><?=$OPEN_VPN_INSTALLED," / ",$EASYRSA_VERSION_INSTALLED?></span>
 	</td>
+	<td>
+	    <span class="green-text"><?=$LATEST_COMMIT?></span>
+        </td>
 	</tr>      
     </table>
   </div>  
@@ -155,6 +172,9 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
            <th colspan="2">Control Actions</th>
 	   </thead>
     </tr>  
+
+
+
 	  <form name="help1_openvpnserver" method="POST" action="/update.php" target="progressFrame">
 	 <blockquote class="inline_help">
 		  Post installaton for OpenVPN server.<br />
@@ -168,7 +188,7 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
 		 7: When you created the client file, preferred a "inline file" (inline file is only one *.ovpn) on the server then you can email the config (with file extension .ovpn) as an attachment from an email account on your computer (or a webmail) to the email address setup on IOS in the Mail app. In the mail app open the email and open the .ovpn file, then choose to open it with OpenVPN. If you did it right, OpenVPN opens and you can click a + icon next to your config to import it. Now you can simply slide Off to On and your VPN connects.
 	    </blockquote>
 	   </form>
-		  		  
+  
      <?if ($openvpnserver_running=="yes"):?>
         <tr>
         <td width="20%">
@@ -192,7 +212,9 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
         <?if ($openvpnserver_config=="yes" and  $ovpncertsfolder=="yes"):?> 
          <?if ($OPEN_VPN_INSTALLED!=""):?>
           </tr>
-          <tr>
+         
+
+	 <tr>
           <td width="30%">
 			<form name="start_openvpnserver" method="POST" action="/update.php" target="progressFrame">
                 <input type="hidden" name="#command" value="/plugins/openvpnserver/scripts/rc.openvpnserver">
@@ -206,7 +228,7 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
 		   </td>
           </tr>
 		<?endif;?>
-       <?endif;?>
+       <?endif;?>	
      <?endif;?>
     </table>
   </div>
@@ -216,8 +238,8 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
     <?if ($openvpnserver_running != "yes"):?>   
     <table class="tablesorter">
       <tr>
-      	<thead>
-	      	<th colspan="3">Server configuration</th>
+      <thead>
+	       <th colspan="3">Server configuration</th>
 		</thead>
       </tr>
 	 
@@ -231,12 +253,14 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
                 <button style="font-size:15px">Install RSA key management package (Easy-RSA)  <i class="fa fa-download"></i></button>
 		</form>
        </td>
+
         <?if ($ovpncertsoftware=="yes"):?>
 			<td <span align="center" class="fa fa-check-square-o" style="font-size:20px;color:green"></td>
+			<td><span class="green-text"><?=$EASYRSA_LATEST_COMMIT?></span></td>
 		<?else:?>
 			<td <span align="center" class="fa fa-square-o" style="font-size:20px;color:red"></td>		
 			<td><span align="center" class="fa fa-warning icon warning"style="font-size:20px"></span><p>Easyrsa is not downloaded</p></td>			
-   	    <?endif;?>
+      <?endif;?>
       </tr>
  
        <tr>
@@ -266,12 +290,15 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
 		</blockquote>
 <?endif;?>
 
+
 	  </form>
         </td>
+
+
          <?if ($ovpncertsfolder=="yes"):?>
          <td <span align="center" class="fa fa-check-square-o" style="font-size:20px;color:green"></td>	
 			<td><span align="center" class="fa fa-info"style="font-size:15px"><i> If you like you can now regenerate the server certs and start from a fresh server. This will also delete all client file/certs</i></span></td>			
-         <?else:?> 	
+         <?else:?> 
 			<td <span align="center" class="fa fa-square-o" style="font-size:20px;color:red"></td>
 			<td><span align="center" class="fa fa-warning icon warning"style="font-size:20px"></span><p>You have not generate the server certs</p></td>			
 	    <?endif;?>
@@ -279,9 +306,9 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
         
        <td><b><span class="black-text">Server config file:</span></b></td>
           <?if ($openvpnserver_config=="yes"):?>
-         	<td align="center" class="fa fa-check-square-o" style="font-size:20px;color:green"></td>
+          <td align="center" class="fa fa-check-square-o" style="font-size:20px;color:green"></td>
 			<td><span class="green-text"><?=$SERVER_FILE?></span></td>
-		  <?else:?> 	
+			<?else:?>
 			<td <span align="center" class="fa fa-square-o" style="font-size:20px;color:red"></td>	
 			<td><span align="center" class="fa fa-warning icon warning"style="font-size:20px"></span><p>You have not saved the Server Config</p></td>			
          <?endif;?>
@@ -290,6 +317,7 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
 
 	     <?if ($CHECKFOLDERVPN != "Yes"):?>
 			<td><span align="center" class="fa fa-warning icon warning"style="font-size:20px"></span>
+
 				<p>Warning ! Server are not yet configured</p>
 				<p>1: Change and save settings in Cert and Misc Settings.</p>
 				<p>2: Install Easy-rsa.</p>
@@ -309,19 +337,11 @@ if (file_exists('/var/local/emhttp/plugins/openvpnserver/openvpnservercert.out')
 			<left><a href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=TXFVJQVYZRBBU&lc=SE&item_name=Support my work on the 2 openvpn plugins and my support!&currency_code=EUR' target='_blank'><img src='https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif'></a></left>
 		<br>
 			<left><br><a href='https://forums.lime-technology.com/topic/33783-openvpn-server-client-for-unraid-62-61-are-still-supported/' target='_blank'>Plugin Support Thread</a></left>
+			
+			<left><br><a href='https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage' target='_blank'>Openvpn24ManPage</a></left>			
+			<left><br><a href='https://forums.openvpn.net/' target='_blank'>OpenVPN Support Forum</a></left>
+			<left><br><a href='https://github.com/OpenVPN/easy-rsa/' target='_blank'>EASYRSA on github</a></left>
         </table></left>
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
              <?endif;?>
 
@@ -379,4 +399,5 @@ function checkRUNNING() {
     form.IP_PORT_SHARE.disabled = true;
   }
 }
+
 </script>
