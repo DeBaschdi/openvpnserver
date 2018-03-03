@@ -4,11 +4,11 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2017.01.03">
+<!ENTITY version   "2017.03.03">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
-<!ENTITY pluginURL "https://raw.githubusercontent.com/&plgauthor;/openvpnserver_test/master/openvpn_server_x64.plg">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/&plgauthor;/openvpnserver/master/openvpn_server_x64.plg">
 <!ENTITY pkgURL	 "https://mirrors.slackware.com/slackware/">
 <!ENTITY pkgs 	    "/boot/packages/">
 <!ENTITY plugin	 "/boot/config/plugins/&name;">
@@ -30,7 +30,7 @@
 
 <CHANGES>
 ##&name;
-###2017.01.03
+###2017.03.03
 - Added support for Elliptic Curve crypto!
 - After changing to EC or still using RSA you must....
  - Re-save settings on page "server config". 
@@ -114,7 +114,7 @@ openvpnserver version 3 64Bit with easyrsa V3
 get from github as tarball
 -->
 <FILE Name="&plugin;/&name;-&version;.tar.gz">
-<URL>"https://github.com/&plgauthor;/openvpnserver_test/archive/&version;.tar.gz"</URL>
+<URL>"https://github.com/&plgauthor;/openvpnserver/archive/&version;.tar.gz"</URL>
 </FILE>
 
 <!--
