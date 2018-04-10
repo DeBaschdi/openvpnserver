@@ -170,7 +170,6 @@ rm -f /etc/rc.d/rc.openvpnserver
 <INLINE>
 <![CDATA[
 #!/bin/bash
-# Check my IP script
 if ping -c 1 icanhazip.com  &>/dev/null
 then
         curl -s --max-time 15 --silent icanhazip.com
