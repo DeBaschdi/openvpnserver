@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2018.03.03b">
+<!ENTITY version   "2018.04.10">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2018.04.10
+- Update of script to fetch your WAN IP
 ###2018.03.03b
 - Update of OpenVPN packages to 2.4.5
 - Added a link to OpenVPN Overview of changes.
@@ -167,11 +169,14 @@ rm -f /etc/rc.d/rc.openvpnserver
 <FILE Name="/var/local/emhttp/plugins/openvpnserver/check-my-ip.sh" Mode="0770">
 <INLINE>
 <![CDATA[
-# Check my IP script
 #!/bin/bash
-#wget http://ipecho.net/plain -O - -q ; echo
-#curl icanhazip.com
-curl -s --max-time 15 --silent icanhazip.com
+# Check my IP script
+if ping -c 1 icanhazip.com  &>/dev/null
+then
+        curl -s --max-time 15 --silent icanhazip.com
+else
+        curl -s --max-time 15 --silent  https://api.ipify.org/
+fi
 ]]>
 </INLINE>
 </FILE>
