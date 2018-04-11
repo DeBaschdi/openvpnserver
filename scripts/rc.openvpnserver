@@ -799,13 +799,6 @@ server_IP()
 	echo $IP
 }
 
-openvpnserver_getonlineversion()
-{
-OPEN_VPN_HOSTING_SERVER="http://openvpn.net/index.php/open-source/downloads.html"
-OPEN_VPN_ONLINE_VER=$(wget ${OPEN_VPN_HOSTING_SERVER} -q --no-check-certificate -O - |grep "Change Log" | awk 'gsub(/.*OpenVPN | -- released on.*/,"")')
-echo "${OPEN_VPN_ONLINE_VER:0:6}"
-}
-
 openvpnserver_getlocalversion()
 {
 if [ -e /usr/sbin/openvpn ];
@@ -937,12 +930,9 @@ case "$1" in
   'serverip')
     server_IP
     ;;
-    'checkfolder')
+  'checkfolder')
     openvpnserver_checkfolder
     ;;
-  'getonlineversion')
-   openvpnserver_getonlineversion
-   ;;
   'getlocalversion')
    openvpnserver_getlocalversion
    ;;
