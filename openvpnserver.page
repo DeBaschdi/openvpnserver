@@ -20,7 +20,6 @@ $ovpncertsfolder = file_exists($openvpnserver_cert_cfg['SERVER_PATH'] . "/easy-r
 $certsw = $openvpnserver_cert_cfg['SERVER_PATH'] . "/easy-rsa/easyrsa3/";
 $ovpncertsoftware = file_exists($certsw) ? "yes" : "no";
 $openvpnserver_config = file_exists($openvpnserver_cert_cfg['SERVER_PATH'] . "/openvpnserver.ovpn") ? "yes" : "no";
-$OPEN_VPN_ONLINE_VER = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver getonlineversion");
 $OPEN_VPN_INSTALLED = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver getlocalversion");
 $internet_myip = shell_exec("/var/local/emhttp/plugins/openvpnserver/check-my-ip.sh");
 $LAN_IP = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver get_gw");
