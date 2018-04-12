@@ -290,11 +290,13 @@ if [ "$IP_PORT_SHARE" != "" ]; then
 	echo "port-share $IP_PORT_SHARE" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
-echo "# Notify the client that when the server restarts so it" >> $SERVER_PATH/openvpnserver.ovpn
-echo "# can automatically reconnect." >> $SERVER_PATH/openvpnserver.ovpn
-echo "explicit-exit-notify 1" >> $SERVER_PATH/openvpnserver.ovpn
-#In UDP server mode, send RESTART control channel command to connected clients. The n parameter (default=1) controls client behavior. With n = 1 client will attempt to reconnect to the same server
-
+# Disable for TCP (unsupported)
+if [ "$PROTOCOL" = "udp" ]; then
+	echo "# Notify the client that when the server restarts so it" >> $SERVER_PATH/openvpnserver.ovpn
+	echo "# can automatically reconnect." >> $SERVER_PATH/openvpnserver.ovpn
+	echo "explicit-exit-notify 1" >> $SERVER_PATH/openvpnserver.ovpn
+	#In UDP server mode, send RESTART control channel command to connected clients. The n parameter (default=1) controls client behavior. With n = 1 client will attempt to reconnect to the same server
+fi
 
 #new 2018-01-05
 	echo "remote-cert-tls client" >> $SERVER_PATH/openvpnserver.ovpn
