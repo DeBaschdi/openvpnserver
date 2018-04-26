@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2018.04.25">
+<!ENTITY version   "2018.04.26">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2018.04.26
+- Update of OpenVPN packages to 2.4.6
 ###2018.04.25
 - Update of Tcl packages to 8.6.8-3
 - Update of expect packages to 5.45.4-2
@@ -117,9 +119,9 @@ openvpnserver version 3 64Bit with easyrsa V3
 <MD5>0c54c544ae24c5c59d25a5d52930e24a</MD5>
 </FILE>
 
-<FILE Name="&pkgs;openvpn-2.4.5-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/openvpn-2.4.5-x86_64-1.txz</URL>
-<MD5>f9f05c2fa622b6bb2d06733687748a40</MD5>
+<FILE Name="&pkgs;openvpn-2.4.6-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/openvpn-2.4.6-x86_64-1.txz</URL>
+<MD5>bd7acdf136f08d6aa3712601d1ea90c9</MD5>
 </FILE>
 
 <!--
