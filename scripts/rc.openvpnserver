@@ -346,13 +346,13 @@ source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 echo $SERVER_PATH
 echo "--- Available versions ----" > $SERVER_PATH/easyrsa_versions_full_path.txt
 curl  --fail --silent https://github.com/OpenVPN/easy-rsa/releases | grep zip |  grep download/ | cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_versions_full_path.txt
-curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip |  grep archive/ | cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_versions_full_path.txt
+curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip |  grep archive/ | cut -d\" -f12 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_versions_full_path.txt
 EASYRSA_FULL_PATH_VERSIONS=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/releases | grep zip |  grep download/ | cut -d\" -f2 | sed 's#^#https://github.com#g' | grep -v "sig" )
 }
 
 openvpnserver_get_current_commit_date()
 {
-COMMIT_DATE=$((curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $5 }'  | awk -F .zip '{ print $1 }'; (echo " / " ) ;curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep /relative-time | awk -F T '{ print $1 }' |  sed 's/.*datetime="//') | tr '\n' '\t')
+COMMIT_DATE=$((curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $9 }'  | awk -F .zip '{ print $1 }'; (echo " / " ) ;curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep /relative-time | awk -F T '{ print $1 }' |  sed 's/.*datetime="//') | tr '\n' '\t')
 echo $COMMIT_DATE
 }
 
@@ -364,7 +364,7 @@ source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 cd $SERVER_PATH
 
 (echo "Installed version: "; curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | \
-grep .zip | grep archive | awk -F / '{ print $5 }' | \
+grep .zip | grep archive | awk -F / '{ print $9 }' | \
 awk -F .zip '{ print $1}' ; echo "was comitted on github then : "\
 ; curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | \
 grep /relative-time | awk -F T '{ print $1 }' |  sed 's/.*datetime="//') \
@@ -373,10 +373,10 @@ grep /relative-time | awk -F T '{ print $1 }' |  sed 's/.*datetime="//') \
 #curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $5 }' | awk -F .zip '{ print $1}') | tr '\n' '\t' > $SERVER_PATH/easyrsa_latest_commit.txt
 #curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip |  grep archive/ | cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_latest_commit.txt
 
-EASYRSA_DL_VERSION=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip | grep archive |  cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig")
+EASYRSA_DL_VERSION=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip | grep archive |  cut -d\" -f12 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig")
 echo $EASYRSA_DL_VERSION
 
-EASYRSA_FILENAME=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $5 }' |  sed s'/.$//')
+EASYRSA_FILENAME=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $9 }' |  sed s'/.$//')
 echo $EASYRSA_FILENAME
 echo "Going to download ....$EASYRSA_DL_VERSION"
 wget $EASYRSA_DL_VERSION
