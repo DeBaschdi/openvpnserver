@@ -376,7 +376,7 @@ grep /relative-time | awk -F T '{ print $1 }' |  sed 's/.*datetime="//') \
 EASYRSA_DL_VERSION=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep zip | grep archive |  cut -d\" -f12 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig")
 echo $EASYRSA_DL_VERSION
 
-EASYRSA_FILENAME=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $9 }' |  sed s'/.$//')
+EASYRSA_FILENAME=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/ | grep .zip | grep archive | awk -F / '{ print $9 }' |  sed s'/.$//' |  sed -e 's/\"[^\.]*$//')
 echo $EASYRSA_FILENAME
 echo "Going to download ....$EASYRSA_DL_VERSION"
 wget $EASYRSA_DL_VERSION
