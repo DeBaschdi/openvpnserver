@@ -29,7 +29,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 	
 <?if ($CHECKFOLDERVPN == "Yes"):?>
      
-  <?if (($openvpnserver_running == "yes") && ($pids=="0")):?>
+  <?if (($openvpnserver_running == "yes") && ($pids!="0")):?>
     <div><left><b>To change configuration - Press Stop in "Control Action"</b></center></div>
   <?endif;?>
 	
