@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2019.11.30">
+<!ENTITY version   "2019.11.30a">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2019.11.30a
+- Update of Tcl packages to 8.6.10-1
 ###2019.11.30
 - Update of OpenVPN packages to 2.4.8
 ###2019.06.05
@@ -118,9 +120,9 @@ certificate provided is truly a client certificate, and vice versa.
 openvpnserver version 3 64Bit with easyrsa V3
 -->
 
-<FILE Name="&pkgs;tcl-8.6.9-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/tcl-8.6.9-x86_64-1.txz</URL>
-<MD5>28973a4faaa47fc39984dc506f3ab162</MD5>
+<FILE Name="&pkgs;tcl-8.6.10-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/tcl-8.6.10-x86_64-1.txz</URL>
+<MD5>4cd65fe982c8ddc69ccae56f9e00b155</MD5>
 </FILE>
 
 <FILE Name="&pkgs;expect-5.45.4-x86_64-2.txz" Run="upgradepkg --install-new">
