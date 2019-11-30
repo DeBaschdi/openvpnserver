@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm">
 <!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2019.06.05">
+<!ENTITY version   "2019.11.30">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2019.11.30
+- Update of OpenVPN packages to 2.4.8
 ###2019.06.05
 - Bug fix.
 ###2019.03.15a
@@ -126,9 +128,9 @@ openvpnserver version 3 64Bit with easyrsa V3
 <MD5>0c54c544ae24c5c59d25a5d52930e24a</MD5>
 </FILE>
 
-<FILE Name="&pkgs;openvpn-2.4.6-x86_64-2.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/openvpn-2.4.6-x86_64-2.txz</URL>
-<MD5>67b625b30a71a76d765c60c24cf3e2ac</MD5>
+<FILE Name="&pkgs;openvpn-2.4.8-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/openvpn-2.4.8-x86_64-1.txz</URL>
+<MD5>f560e586208bb531f164db29ebf26a27</MD5>
 </FILE>
 
 <!--
