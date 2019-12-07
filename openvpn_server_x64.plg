@@ -2,9 +2,9 @@
 
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "openvpnserver">
-<!ENTITY author    "peter_sm">
-<!ENTITY plgauthor    "petersm1">
-<!ENTITY version   "2019.11.30a">
+<!ENTITY author    "peter_sm tap Mod by DeBaschdi">
+<!ENTITY plgauthor    "DeBaschdi">
+<!ENTITY version   "2019.11.30a-mod">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2019.11.30a-mod
+- Use bridged Tap instead Tun
 ###2019.11.30a
 - Update of Tcl packages to 8.6.10-1
 ###2019.11.30
@@ -148,10 +150,10 @@ The 'install' script.
 <FILE Run="/bin/bash">
 <INLINE>
 mkdir -p /dev/net
-if [ ! -c /dev/net/tun ]; then
-	mknod /dev/net/tun c 10 200
+if [ ! -c /dev/net/tap ]; then
+	mknod /dev/net/tap c 10 200
 fi
-modprobe tun
+modprobe tap
 echo 1 > /proc/sys/net/ipv4/ip_forward
 mkdir -p /var/run/openvpnserver/
  

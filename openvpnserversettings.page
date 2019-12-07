@@ -7,6 +7,7 @@ Markdown="false"
   
 <?php
 $CHECKFOLDERVPNTMP = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver checkfolder");
+$AUTO_SERVER_ADDR = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip");
 $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 ?>
 <div>
@@ -52,15 +53,15 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 	<blockquote class="inline_help">
 		<p>If you have a URL (like DynDNS), you can enter it here, this will override your WAN IP in client config files</p>     
 	</blockquote>
-
-    <dl>
-      <dt>OpenVPN server IP</dt>
-      <dd><input type="text" style="width:25%" maxlength="15" name="NETWORK" id="NETWORK" required="required" value="<?=$openvpnserver_cfg['NETWORK'];?>" title="Default is 10.8.0.0, but can be set to any IP you like for the VPN server, example 10.10.0.0"></dd>
+ 
+	<dl>		
+      <dt>Client DHCP Range</dt>
+      <dd><input type="text" style="width:25%" maxlength="32" name="POOL" id="POOL"  required="required" value="<?=$openvpnserver_cfg['POOL'];?>" title="Example 192.168.20.2 192.168.20.30"</dd>
 	</dl>
 	<blockquote class="inline_help">
-		<p>Default server IP is <span class="green" style="font-weight: bold">10.8.0.0</span>, but can be set to any IP you like for the VPN server, example 10.10.0.0.</p>
+		<p>Please Enter an DHCP Range e.G 192.168.20.10 192.168.20.30</p>
 	</blockquote>
- 
+
 	<dl>		
       <dt>Netmask</dt>
       <dd><input type="text" style="width:25%" maxlength="15" name="NETMASK" id="NETMASK"  required="required" value="<?=$openvpnserver_cfg['NETMASK'];?>" title="Default is 255.255.255.0"</dd>
@@ -82,13 +83,13 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 			<p>Enable this directive to allow different clients to be able to "see" each other. By default, clients will only see the server.</p>
 	</blockquote>
 	  
-     <dl>
-      <dt>Pushing DHCP options to clients</dt>
+    <dl>
+      <dt>Push DNS Nameserver to Clients 1/3</dt>
 	  
-      <dd><select name="DHCP_1" id="DHCP_1" size="1">
-      <?=mk_option($openvpnserver_cfg['DHCP_1'], "GOOGLE", "Google DNS");?>
-      <?=mk_option($openvpnserver_cfg['DHCP_1'], "OPENDNS", "OpenDNS");?>
-      <?=mk_option($openvpnserver_cfg['DHCP_1'], "dhcp-option DNS", "DNS Local gateway");?>
+      <dd><select name="DNS_1" id="DNS_1" size="1">
+      <?=mk_option($openvpnserver_cfg['DNS_1'], "GOOGLE", "Google DNS");?>
+      <?=mk_option($openvpnserver_cfg['DNS_1'], "OPENDNS", "OpenDNS");?>
+      <?=mk_option($openvpnserver_cfg['DNS_1'], "dhcp-option DNS", "DNS Local gateway");?>
       </select>
 	 </dd>
 	 </dl>
@@ -97,7 +98,40 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 			<p>OpenDNS -- Uses OpenDNS (208.67.222.222 / 208.67.222.220)</p>
 			<p>DNS Local gateway -- Set primary domain name server	  address to your gateway.</p>
 		</blockquote>
-		
+
+
+	<dl>		
+      <dt>Push DNS Nameserver to Clients 2/3</dt>
+      <dd><input type="text" style="width:25%" maxlength="15" name="DNS_2" id="DNS_2"  required="no" value="<?=$openvpnserver_cfg['DNS_2'];?>" title="Enter Second DNS Nameserver"</dd>
+	</dl>
+	<blockquote class="inline_help">
+		<p>Enter Second DNS Nameserver.</p>
+	</blockquote> 
+
+	<dl>		
+      <dt>Push DNS Nameserver to Clients 3/3</dt>
+      <dd><input type="text" style="width:25%" maxlength="15" name="DNS_3" id="DNS_3"  required="no" value="<?=$openvpnserver_cfg['DNS_3'];?>" title="Enter Third DNS Nameserver"</dd>
+	</dl>
+	<blockquote class="inline_help">
+		<p>Enter Second DNS Nameserver.</p>
+	</blockquote> 
+
+	<dl>		
+      <dt>WINS Server</dt>
+      <dd><input type="text" style="width:25%" maxlength="15" name="WINS" id="WINS"  required="no" value="<?=$openvpnserver_cfg['WINS'];?>" title="Enter WINS SERVER"</dd>
+	</dl>
+	<blockquote class="inline_help">
+		<p>Enter WINS SERVER.</p>
+	</blockquote> 
+
+	<dl>		
+      <dt>DOMAIN</dt>
+      <dd><input type="text" style="width:25%" maxlength="15" name="DOMAIN" id="DOMAIN"  required="no" value="<?=$openvpnserver_cfg['DOMAIN'];?>" title="Enter DOMAIN Name"</dd>
+	</dl>
+	<blockquote class="inline_help">
+		<p>Enter DOMAIN Name e.g tower.local</p>
+	</blockquote> 	
+
      <dl>
       <dt>Port for the server</dt>
       <dd>

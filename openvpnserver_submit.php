@@ -1,5 +1,4 @@
 <?PHP
-$NETWORK = $_POST['NETWORK'];
 $NETMASK = $_POST['NETMASK'];
 $SERVER_PORT = $_POST['SERVER_PORT'];
 $CANONICAL = $_POST['CANONICAL'];
@@ -12,7 +11,12 @@ $SUBNET = $_POST['SUBNET'];
 $LAN_SUBNET = $_POST['LAN_SUBNET'];
 $COMP_LZO = $_POST['COMP_LZO'];
 $IPP = $_POST['IPP'];
-$DHCP_1 = $_POST['DHCP_1'];
+$DNS_1 = $_POST['DNS_1'];
+$DNS_2 = $_POST['DNS_2'];
+$DNS_3 = $_POST['DNS_3'];
+$POOL = $_POST['POOL'];
+$WINS = $_POST['WINS'];
+$DOMAIN = $_POST['DOMAIN'];
 $TELNET_CONSOLE = $_POST['TELNET_CONSOLE'];
 $VERB = $_POST['VERB'];
 $IP_PORT_SHARE = $_POST['IP_PORT_SHARE'];
@@ -20,7 +24,6 @@ $TLSENCRYPT = $_POST['TLSENCRYPT'];
 
 
 $arguments = "";
-$arguments .= "NETWORK_NEW=\"$NETWORK\"\n";
 $arguments .= "NETMASK_NEW=\"$NETMASK\"\n";
 $arguments .= "SERVER_PORT_NEW=\"$SERVER_PORT\"\n";
 $arguments .= "CANONICAL_NEW=\"$CANONICAL\"\n";
@@ -33,7 +36,12 @@ $arguments .= "SUBNET_NEW=\"$SUBNET\"\n";
 $arguments .= "LAN_SUBNET_NEW=\"$LAN_SUBNET\"\n";
 $arguments .= "COMP_LZO_NEW=\"$COMP_LZO\"\n";
 $arguments .= "IPP_NEW=\"$IPP\"\n";
-$arguments .= "DHCP_1_NEW=\"$DHCP_1\"\n";
+$arguments .= "DNS_1_NEW=\"$DNS_1\"\n";
+$arguments .= "DNS_2_NEW=\"$DNS_2\"\n";
+$arguments .= "DNS_3_NEW=\"$DNS_3\"\n";
+$arguments .= "POOL_NEW=\"$POOL\"\n";
+$arguments .= "WINS_NEW=\"$WINS\"\n";
+$arguments .= "DOMAIN_NEW=\"$DOMAIN\"\n";
 $arguments .= "TELNET_CONSOLE_NEW=\"$TELNET_CONSOLE\"\n";
 $arguments .= "VERB_NEW=\"$VERB\"\n";
 $arguments .= "IP_PORT_SHARE_NEW=\"$IP_PORT_SHARE\"\n";

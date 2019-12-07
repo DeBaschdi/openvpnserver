@@ -1,11 +1,6 @@
-**OpenVPN Server TUN mode**
-<br/>
-<a href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=TXFVJQVYZRBBU&lc=SE&item_name=Support my work on the 2 openvpn plugins and my support!&currency_code=EUR' targ
-et='_blank'><img src='https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_donate_74x21.png'> To support my work on my 2 openvpn plugins and my support!</a>
+**OpenVPN Server TAP mode**
 
-
-<br><a href='https://forums.lime-technology.com/topic/33783-openvpn-server-client-for-unraid-62-61-are-still-supported/' target='_blank'>Plugin Support Thread</a>
-
+Dirty for now, testing...
 
 
 What is OpenVPN?
