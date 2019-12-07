@@ -102,7 +102,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 
 	<dl>		
       <dt>Push DNS Nameserver to Clients 2/3</dt>
-      <dd><input type="text" style="width:25%" maxlength="15" name="DNS_2" id="DNS_2"  required="no" value="<?=$openvpnserver_cfg['DNS_2'];?>" title="Enter Second DNS Nameserver"</dd>
+      <dd><input type="text" style="width:25%" maxlength="15" name="DNS_2" id="DNS_2" value="<?=$openvpnserver_cfg['DNS_2'];?>" title="Enter Second DNS Nameserver"</dd>
 	</dl>
 	<blockquote class="inline_help">
 		<p>Enter Second DNS Nameserver.</p>
@@ -110,7 +110,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 
 	<dl>		
       <dt>Push DNS Nameserver to Clients 3/3</dt>
-      <dd><input type="text" style="width:25%" maxlength="15" name="DNS_3" id="DNS_3"  required="no" value="<?=$openvpnserver_cfg['DNS_3'];?>" title="Enter Third DNS Nameserver"</dd>
+      <dd><input type="text" style="width:25%" maxlength="15" name="DNS_3" id="DNS_3"  value="<?=$openvpnserver_cfg['DNS_3'];?>" title="Enter Third DNS Nameserver"</dd>
 	</dl>
 	<blockquote class="inline_help">
 		<p>Enter Second DNS Nameserver.</p>
@@ -118,7 +118,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 
 	<dl>		
       <dt>WINS Server</dt>
-      <dd><input type="text" style="width:25%" maxlength="15" name="WINS" id="WINS"  required="no" value="<?=$openvpnserver_cfg['WINS'];?>" title="Enter WINS SERVER"</dd>
+      <dd><input type="text" style="width:25%" maxlength="15" name="WINS" id="WINS"  value="<?=$openvpnserver_cfg['WINS'];?>" title="Enter WINS SERVER"</dd>
 	</dl>
 	<blockquote class="inline_help">
 		<p>Enter WINS SERVER.</p>
@@ -126,7 +126,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 
 	<dl>		
       <dt>DOMAIN</dt>
-      <dd><input type="text" style="width:25%" maxlength="15" name="DOMAIN" id="DOMAIN"  required="no" value="<?=$openvpnserver_cfg['DOMAIN'];?>" title="Enter DOMAIN Name"</dd>
+      <dd><input type="text" style="width:25%" maxlength="15" name="DOMAIN" id="DOMAIN"  value="<?=$openvpnserver_cfg['DOMAIN'];?>" title="Enter DOMAIN Name"</dd>
 	</dl>
 	<blockquote class="inline_help">
 		<p>Enter DOMAIN Name e.g tower.local</p>

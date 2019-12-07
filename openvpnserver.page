@@ -36,7 +36,7 @@ $SERVERCONFIGPATH = $openvpnserver_cert_cfg['SERVER_PATH'];
 $EASYRSA_VERSION_INSTALLED = @file_get_contents("$SERVERCONFIGPATH/installed_easyrsa.txt");
 $EASYRSA_LATEST_COMMIT = @file_get_contents("$SERVERCONFIGPATH/easyrsa_latest_commit.txt");
 $LATEST_COMMIT = shell_exec("/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver commit_date_easyrsa");
-
+$POOL = $openvpnserver_cfg['POOL'];
 
  if (file_exists('/var/local/emhttp/plugins/openvpnserver/add_client.log'))
 	{$add_client_log = file_get_contents('/var/local/emhttp/plugins/openvpnserver/add_client.log');} 
@@ -94,9 +94,9 @@ if (file_exists("$SERVERCONFIGPATH/openvpnservercert.out"))
       <tr>
       <thead>
 			<th>WAN IP</th>	
-			<th>unRAID server IP</th>
+			<th>unRAID server Bridge</th>
 			<th>LAN Gateway</th>
-			<th>VPN Server IP</th>
+			<th>VPN DHCP RANGE</th>
 			<th>Certificate type</th>	
 			<th>OpenVPN / Easyrsa Version</th>
 			<th>Current EasyRSA on github / Commit date</th>
@@ -113,7 +113,7 @@ if (file_exists("$SERVERCONFIGPATH/openvpnservercert.out"))
             <span class="green-text"><?=$LAN_IP?></span>
         </td>      
         <td>         
-            <span class="green-text"><?=$VPN_SERVER_IP?></span>
+            <span class="green-text"><?=$POOL?></span>
         </td>
 	<td>         
             <span class="green-text"><?=$CRYPTO?></span>
@@ -349,7 +349,7 @@ if (file_exists("$SERVERCONFIGPATH/openvpnservercert.out"))
 <script type="text/javascript">
 
 function validateForm() {
-  document.getElementById('NETWORK').disabled = false;
+  document.getElementById('POOL').disabled = false;
   document.getElementById('NETWORK_TEXT').disabled = false;
   document.getElementById('NETMASK').disabled = false;
   document.getElementById('SERVER_PORT').disabled = false;
@@ -364,6 +364,10 @@ function validateForm() {
   document.getElementById('COMP_LZO').disabled = false;
   document.getElementById('IPP').disabled = false;
   document.getElementById('DNS_1').disabled = false;
+  document.getElementById('DNS_2').disabled = false;
+  document.getElementById('DNS_3').disabled = false;
+  document.getElementById('WINS').disabled = false;
+  document.getElementById('DOMAIN').disabled = false;
   document.getElementById('TELNET_CONSOLE').disabled = false;
   document.getElementById('VERB').disabled = false;
   document.getElementById('IP_PORT_SHARE').disabled = false;
@@ -378,7 +382,7 @@ function validateForm_cert() {
 
 function checkRUNNING() {
   if ("<?=$openvpnserver_running?>" == "yes") { 
-    form.NETWORK.disabled = true;
+    form.POOL.disabled = true;
     form.NETWORK_TEXT.disabled = true;
     form.NETMASK.disabled = true;
     form.SERVER_PORT.disabled = true;
@@ -393,6 +397,10 @@ function checkRUNNING() {
     form.COMP_LZO.disabled = true;
     form.IPP.disabled = true;
     form.DNS_1.disabled = true;
+    form.DNS_2.disabled = true;
+    form.DNS_3.disabled = true;
+    form.WINS.disabled = true;
+    form.DOMAIN.disabled = true;
     form.TELNET_CONSOLE.disabled = true;
     form.VERB.disabled = true;
     form.IP_PORT_SHARE.disabled = true;
