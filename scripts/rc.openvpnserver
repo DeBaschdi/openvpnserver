@@ -51,8 +51,8 @@ ARGUMENTS_FILE="/usr/local/emhttp/plugins/openvpnserver/openvpnserver.args"
 
 [ -f $ARGUMENTS_FILE ] && source $ARGUMENTS_FILE
 
-NETWORK=$NETWORK_NEW
 NETMASK=$NETMASK_NEW
+POOL=$POOL_NEW
 SERVER_PORT=$SERVER_PORT_NEW
 CANONICAL=$CANONICAL_NEW
 PROTOCOL=$PROTOCOL_NEW
@@ -64,7 +64,11 @@ SUBNET=$SUBNET_NEW
 LAN_SUBNET=$LAN_SUBNET_NEW
 COMP_LZO=$COMP_LZO_NEW
 IPP=$IPP_NEW
-DHCP_1=$DHCP_1_NEW
+DNS_1=$DNS_1_NEW
+DNS_2=$DNS_2_NEW
+DNS_3=$DNS_3_NEW
+WINS=$WINS_NEW
+DOMAIN=$DOMAIN_NEW
 TELNET_CONSOLE=$TELNET_CONSOLE_NEW
 VERB=$VERB_NEW
 IP_PORT_SHARE=$IP_PORT_SHARE_NEW
@@ -75,11 +79,12 @@ TLSENCRYPT=$TLSENCRYPT_NEW
 #################
 # W R I T E C F G
 #################
+
 write_cfg()
 {
   echo "# openvpnserver plugin configuration file" > /boot/config/plugins/openvpnserver/openvpnserver.cfg
-  echo "NETWORK=$NETWORK" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "NETMASK=$NETMASK" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "POOL=$POOL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "SERVER_PORT=$SERVER_PORT" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "CANONICAL=$CANONICAL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "PROTOCOL=$PROTOCOL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
@@ -91,7 +96,11 @@ write_cfg()
   echo "LAN_SUBNET=\"$LAN_SUBNET\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "COMP_LZO=\"$COMP_LZO\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "IPP=\"$IPP\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
-  echo "DHCP_1=\"$DHCP_1\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "DNS_1=\"$DNS_1\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "DNS_2=\"$DNS_2\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "DNS_3=\"$DNS_3\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "WINS=\"$WINS\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "DOMAIN=\"$DOMAIN\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "TELNET_CONSOLE=\"$TELNET_CONSOLE\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "VERB=\"$VERB\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "IP_PORT_SHARE=\"$IP_PORT_SHARE\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
@@ -119,9 +128,12 @@ if [ ! -f /var/run/openvpnserver/openvpnserver.pid ]; then
 
 	if [ -f /var/run/openvpnserver/openvpnserver.pid ]; then
 		echo "OK... Started"
-		echo "Adding iptables rule ....."
-		openvpnserver_iptables_add; 
- 	else
+    echo "Bridging tap0 to br0"
+    brctl addif br0 tap0
+    ifconfig tap0 0.0.0.0 promisc up
+    echo "Adding iptables rule ....."
+    openvpnserver_iptables_add; 
+  else
  		echo "An error occurred, server not started!. More info in /var/log/openvpnserver.log or /var/local/emhttp/plugins/openvpnserver/openvpnserver.out"
  	fi
  else
@@ -142,6 +154,7 @@ if [ -e /var/run/openvpnserver/openvpnserver.pid ]; then
    echo "... Stopped"
    echo "Deleting iptables rule ...."
    openvpnserver_iptables_delete;
+   brctl delif br0 tap0
 else
   echo "Server already stoped"
 fi
@@ -166,12 +179,10 @@ else
 	chmod 755 $SERVER_PATH
 fi
 
-echo "server $NETWORK $NETMASK" > $SERVER_PATH/openvpnserver.ovpn
-
 LOCAL_SERVER_IP=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip)
-echo "local $LOCAL_SERVER_IP" >> $SERVER_PATH/openvpnserver.ovpn
+echo "server-bridge $LOCAL_SERVER_IP $NETMASK $POOL" > $SERVER_PATH/openvpnserver.ovpn
 
-echo "dev tun" >> $SERVER_PATH/openvpnserver.ovpn
+echo "dev tap" >> $SERVER_PATH/openvpnserver.ovpn
 echo "port $SERVER_PORT" >> $SERVER_PATH/openvpnserver.ovpn
 echo "proto $PROTOCOL" >> $SERVER_PATH/openvpnserver.ovpn
 
@@ -198,17 +209,39 @@ if [ "$IPP" == "ipp.txt" ]; then
 	echo "ifconfig-pool-persist /boot/config/plugins/openvpnserver/$IPP" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
-if [ "$DHCP_1" == "GOOGLE" ]; then
+echo "push "\""explicit-exit-notify""\"" >> $SERVER_PATH/openvpnserver.ovpn
+echo "push "\""dhcp-release""\"" >> $SERVER_PATH/openvpnserver.ovpn
+echo "push "\""dhcp-pre-release""\"" >> $SERVER_PATH/openvpnserver.ovpn
+echo "push "\""dhcp-renew""\"" >> $SERVER_PATH/openvpnserver.ovpn
+echo "push "\""route-metric 101""\"" >> $SERVER_PATH/openvpnserver.ovpn
+
+if [ "$DNS_1" == "GOOGLE" ]; then
    echo "push "\""dhcp-option DNS 8.8.8.8""\"" >> $SERVER_PATH/openvpnserver.ovpn
    echo "push "\""dhcp-option DNS 8.8.4.4""\"" >> $SERVER_PATH/openvpnserver.ovpn
 
-elif [ "$DHCP_1" == "OPENDNS" ]
+elif [ "$DNS_1" == "OPENDNS" ]
 then
    echo "push "\""dhcp-option DNS 208.67.222.222""\"" >> $SERVER_PATH/openvpnserver.ovpn
    echo "push "\""dhcp-option DNS 208.67.222.220""\"" >> $SERVER_PATH/openvpnserver.ovpn
 else
 	LOCAL_GW=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver get_gw)
 	echo "push "\"dhcp-option DNS $LOCAL_GW"\"" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$DNS_2" != "Disable" ]; then
+	echo "push "\""dhcp-option DNS $DNS_2""\"" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$DNS_3" != "Disable" ]; then
+	echo "push "\""dhcp-option DNS $DNS_3""\"" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$WINS" != "Disable" ]; then
+	echo "push "\""dhcp-option WINS $WINS""\"" >> $SERVER_PATH/openvpnserver.ovpn
+fi
+
+if [ "$DOMAIN" != "Disable" ]; then
+	echo "push "\""dhcp-option DOMAIN $DOMAIN""\"" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
 if [ "$GATEWAY" != "Disable" ]; then
@@ -334,7 +367,7 @@ fi
 
 openvpnserver_get_vpnserver()
 {
-   VPN_SERVER=$( ifconfig tun0 | grep "inet " | awk '{print $2}')
+   VPN_SERVER=$( ifconfig tap0 | grep "inet " | awk '{print $2}')
    echo $VPN_SERVER
 }
 
@@ -418,7 +451,7 @@ cd $SERVER_PATH/easy-rsa/easyrsa3
 
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$1/"$1"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
-	spawn ./easyrsa revoke $1
+	spawn bash easyrsa revoke $1
 	expect "*Continue with revocation:"
 	send "yes\r"
 	expect "Enter pass phrase*"
@@ -428,7 +461,7 @@ eof
 
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$1/"$1"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
-	spawn ./easyrsa gen-crl
+	spawn bash easyrsa gen-crl
 	expect "Enter pass phrase*"
 	send "$PASSPHRASE\r"
         expect eof
@@ -470,7 +503,7 @@ cd $SERVER_PATH/easy-rsa/easyrsa3
 
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$client/"$client"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
-	spawn ./easyrsa build-client-full $client nopass
+	spawn bash easyrsa build-client-full $client nopass
 	expect "Enter pass phrase*"
 	send "$PASSPHRASE\r"
 expect eof
@@ -502,7 +535,7 @@ tls-client
 $CIPHER
 $HASH_ALGO
 client
-dev tun
+dev tap
 proto $PROTOCOL
 port $PORT
 nobind
@@ -604,7 +637,7 @@ if [[ $1 == "PK12" ]]; then  # this is for pkcs12 file (IOS ..)
 
 /usr/bin/expect <<eof | tee /var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
-	spawn ./easyrsa  export-p12 $client
+	spawn bash easyrsa  export-p12 $client
 	expect "Enter Export Password:"
 	send "$3\r"
 	expect "Verifying - Enter Export Password:"
@@ -700,7 +733,7 @@ cd $SERVER_PATH/easy-rsa/easyrsa3
 
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
         set timeout 5
-        spawn ./easyrsa init-pki
+        spawn bash easyrsa init-pki
         expect "  Confirm removal:"
         send "yes\r"
         send "\r"
@@ -723,27 +756,27 @@ rm -f $SERVER_PATH/openvpnservercert.out
 cd $SERVER_PATH/easy-rsa/easyrsa3
 
 echo "SIZE : $EASYRSAKEYSIZE"
-#sed -i '/set_var EASYRSA_KEY_SIZE\t/d' ./easyrsa
-#sed -i "/set_var EASYRSA_ALGO\t\trsa/a \\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" ./easyrsa
+#sed -i '/set_var EASYRSA_KEY_SIZE\t/d' bash easyrsa
+#sed -i "/set_var EASYRSA_ALGO\t\trsa/a \\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" bash easyrsa
 
 
-sed -i '/set_var EASYRSA_KEY_SIZE\t/d' ./easyrsa
+sed -i '/set_var EASYRSA_KEY_SIZE\t/d' bash easyrsa
 sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};n;a \\\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" easyrsa
 
-sed -i '/set_var EASYRSA_ALGO\t/d' ./easyrsa
+sed -i '/set_var EASYRSA_ALGO\t/d' bash easyrsa
 sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};a \\\tset_var EASYRSA_ALGO\t\t${CRYPTO}" easyrsa
 
-sed -i '/set_var EASYRSA_CURVE\t/d' ./easyrsa
+sed -i '/set_var EASYRSA_CURVE\t/d' bash easyrsa
 sed -i "/set_var EASYRSA_KEY_SIZE/!{p;d;};a \\\tset_var EASYRSA_CURVE\t\t${CURVE}" easyrsa
 
 if [ "$RENEW_CERT" != "yes" ]; then
 echo "Start init-pki ....."
-./easyrsa init-pki
+bash easyrsa init-pki
 fi
 
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
 	set timeout 5
-	spawn ./easyrsa build-ca
+	spawn bash easyrsa build-ca
 	expect "Enter New CA Key Passphrase:"
 	send "$PASSPHRASE\r"
 	expect "Re-Enter New CA Key Passphrase:"
@@ -757,7 +790,7 @@ sleep 1
 
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
 	set timeout 5
-	spawn ./easyrsa build-server-full server nopass
+	spawn bash easyrsa build-server-full server nopass
 	expect "Enter pass phrase*"
 	send "$PASSPHRASE\r"
 expect eof
@@ -766,7 +799,7 @@ eof
 sleep 1
 
 if [ $CRYPTO == "rsa" ];then
-	./easyrsa gen-dh |& tee -a $SERVER_PATH/openvpnservercert.out
+	bash easyrsa gen-dh |& tee -a $SERVER_PATH/openvpnservercert.out
 fi
 
 openvpn --genkey --secret ta.key | tee -a $SERVER_PATH/openvpnservercert.out
@@ -865,31 +898,14 @@ fi
 openvpnserver_iptables_add() {
 source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 
-#NIC=$(ip route | grep default | sed -e "s/^.*dev.//" -e "s/.proto.*//" | awk '{print $1'})
-NIC=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
-echo $NIC
-IPRULES1="iptables -t nat -A POSTROUTING -s $NETWORK/24 -o $NIC -j MASQUERADE"
-eval $IPRULES1
+iptables -A INPUT -i tap0 -j ACCEPT
+iptables -A FORWARD -i br0 -j ACCEPT
 
-iptables -t nat -L POSTROUTING -n -v --line-numbers | grep $NETWORK
 }
 
 openvpnserver_iptables_delete() {
+source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 
-for line_num in $(iptables -vn -t nat --line-numbers --list POSTROUTING |grep $NETWORK|awk '{print $1}')
-
-do
-  LINES="$line_num $LINES"
-done
-
-# Delete the lines, last to first.
-for line in $LINES
-do
-  iptables -t nat -D POSTROUTING $line
-done
-
-unset LINES
-iptables -t nat -L POSTROUTING -n -v --line-numbers | grep $NETWORK
 }
 
 # read our configuration
