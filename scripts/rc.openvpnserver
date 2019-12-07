@@ -178,9 +178,9 @@ else
 	mkdir -p $SERVER_PATH
 	chmod 755 $SERVER_PATH
 fi
-
+POOL_MOD=$(cat /boot/config/plugins/openvpnserver/openvpnserver.cfg |grep POOL | sed 's/POOL=//')
 LOCAL_SERVER_IP=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip)
-echo "server-bridge $LOCAL_SERVER_IP $NETMASK $POOL" > $SERVER_PATH/openvpnserver.ovpn
+echo "server-bridge $LOCAL_SERVER_IP $NETMASK $POOL_MOD" > $SERVER_PATH/openvpnserver.ovpn
 
 echo "dev tap" >> $SERVER_PATH/openvpnserver.ovpn
 echo "port $SERVER_PORT" >> $SERVER_PATH/openvpnserver.ovpn
@@ -228,19 +228,19 @@ else
 	echo "push "\"dhcp-option DNS $LOCAL_GW"\"" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
-if [ "$DNS_2" != "Disable" ]; then
+if [ "$DNS_2" != "" ]; then
 	echo "push "\""dhcp-option DNS $DNS_2""\"" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
-if [ "$DNS_3" != "Disable" ]; then
+if [ "$DNS_3" != "" ]; then
 	echo "push "\""dhcp-option DNS $DNS_3""\"" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
-if [ "$WINS" != "Disable" ]; then
+if [ "$WINS" != "" ]; then
 	echo "push "\""dhcp-option WINS $WINS""\"" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
-if [ "$DOMAIN" != "Disable" ]; then
+if [ "$DOMAIN" != "" ]; then
 	echo "push "\""dhcp-option DOMAIN $DOMAIN""\"" >> $SERVER_PATH/openvpnserver.ovpn
 fi
 
