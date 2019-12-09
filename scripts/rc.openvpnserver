@@ -84,7 +84,7 @@ write_cfg()
 {
   echo "# openvpnserver plugin configuration file" > /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "NETMASK=$NETMASK" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
-  echo "POOL=$POOL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
+  echo "POOL=\"$POOL\"" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "SERVER_PORT=$SERVER_PORT" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "CANONICAL=$CANONICAL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
   echo "PROTOCOL=$PROTOCOL" >> /boot/config/plugins/openvpnserver/openvpnserver.cfg
@@ -178,7 +178,7 @@ else
 	mkdir -p $SERVER_PATH
 	chmod 755 $SERVER_PATH
 fi
-POOL_MOD=$(cat /boot/config/plugins/openvpnserver/openvpnserver.cfg |grep POOL | sed 's/POOL=//')
+POOL_MOD=$(cat /boot/config/plugins/openvpnserver/openvpnserver.cfg |grep POOL | sed 's/POOL=//' |sed 's/\"//g')
 LOCAL_SERVER_IP=$(/usr/local/emhttp/plugins/openvpnserver/scripts/rc.openvpnserver serverip)
 echo "server-bridge $LOCAL_SERVER_IP $NETMASK $POOL_MOD" > $SERVER_PATH/openvpnserver.ovpn
 
