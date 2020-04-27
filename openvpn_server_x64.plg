@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2020.04.27
+- Updates for DL easyrsa
 ###2019.11.30a
 - Update of Tcl packages to 8.6.10-1
 ###2019.11.30
