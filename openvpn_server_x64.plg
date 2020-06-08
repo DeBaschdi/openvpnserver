@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "peter_sm tap Mod by DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2019.11.30a-mod">
+<!ENTITY version   "2020.04.27-mod">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2020.04.27-mod
+- Updates for DL easyrsa
 ###2019.11.30a-mod
 - Use bridged Tap instead Tun
 ###2019.11.30a
