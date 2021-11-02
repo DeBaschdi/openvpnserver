@@ -1,9 +1,9 @@
 Menu="NetworkServices"
 Icon="openvpnserver.png"
-Version="2020.04.27-mod"
+Version="2021.11.02-tap"
 Author="DeBaschdi"
 Type="xmenu"
-Title="OpenVPN Server TAP mode"
+Title="OpenVPN Server TAP Mode"
 Tabs="true"
 ---
 <link type="text/css" rel="stylesheet" href="/plugins/openvpnserver/styles/openvpnserver.css">
@@ -333,12 +333,12 @@ if (file_exists("$SERVERCONFIGPATH/openvpnservercert.out"))
         <br>
         <br>
         <br>
-			<left><a href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=TXFVJQVYZRBBU&lc=SE&item_name=Support my work on the 2 openvpn plugins and my support!&currency_code=EUR' target='_blank'><img src='https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif'></a></left>
+			<left><a href='https://www.paypal.com/paypalme/debaschdi' target='_blank'><img src='https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif'></a></left>
 		<br>
 			<left><br><a href='https://forums.lime-technology.com/topic/33783-openvpn-server-client-for-unraid-62-61-are-still-supported/' target='_blank'>Plugin Support Thread</a></left>
 			<left><br><a href='https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage' target='_blank'>Openvpn24ManPage</a></left>			
 			<left><br><a href='https://forums.openvpn.net/' target='_blank'>OpenVPN Support Forum</a></left>
-			 <left><br><a href='https://github.com/OpenVPN/openvpn/blob/release/2.4/Changes.rst' target='_blank'>Overview of changes in OpenVPN 2.4</a></left>
+			 <left><br><a href='https://github.com/OpenVPN/openvpn/blob/release/2.5/Changes.rst' target='_blank'>Overview of changes in OpenVPN 2.5</a></left>
 			<left><br><a href='https://github.com/OpenVPN/easy-rsa/' target='_blank'>EASYRSA on github</a></left>
         </table></left>
 </div>
