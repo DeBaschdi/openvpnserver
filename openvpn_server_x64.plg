@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2021.11.02.02-tap">
+<!ENTITY version   "2021.11.02-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,13 +30,11 @@
 
 <CHANGES>
 ##&name;
-###2021.11.02.02-tap
-- Fix max Length for Domain Names
 ###2021.11.02-tap
 - Updates for Packages
-- ovpn 2.5.4
-- tcl 8.6.11
-- expect 5.45.4
+- ovpn 2.4.9
+- tcl 8.6.5
+- expect 5.45
 ###2020.04.27-mod
 - Updates for DL easyrsa
 ###2019.11.30a-mod
@@ -131,19 +129,19 @@ certificate provided is truly a client certificate, and vice versa.
 openvpnserver version 3 64Bit with easyrsa V3
 -->
 
-<FILE Name="&pkgs;tcl-8.6.11-x86_64-3.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/tcl-8.6.11-x86_64-3.txz</URL>
-<MD5>25c98221a98a8d4c22aa20e9c03098c5</MD5>
+<FILE Name="&pkgs;tcl-8.6.5-x86_64-2.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/tcl-8.6.5-x86_64-2.txz</URL>
+<MD5>46afe0695a2f7c3ca65aa6e59e35d631</MD5>
 </FILE>
 
-<FILE Name="&pkgs;expect-5.45.4-x86_64-4.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/expect-5.45.4-x86_64-4.txz</URL>
-<MD5>1c99acc563a57cf278c057edc43ec8f1</MD5>
+<FILE Name="&pkgs;expect-5.45-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/expect-5.45-x86_64-1.txz</URL>
+<MD5>273ffe5200e7851328ed0b0eec001de1</MD5>
 </FILE>
 
-<FILE Name="&pkgs;openvpn-2.5.4-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/openvpn-2.5.4-x86_64-1.txz</URL>
-<MD5>4f4da31acbb47155d39cc879d030dc80</MD5>
+<FILE Name="&pkgs;openvpn-2.4.9-x86_64-1_slack14.2.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/openvpn-2.4.9-x86_64-1_slack14.2.txz</URL>
+<MD5>5ab3046a28bfa972b27f512f35268dda</MD5>
 </FILE>
 
 <!--
