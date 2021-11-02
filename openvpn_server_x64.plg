@@ -144,6 +144,11 @@ openvpnserver version 3 64Bit with easyrsa V3
 <MD5>5ab3046a28bfa972b27f512f35268dda</MD5>
 </FILE>
 
+<FILE Name="&pkgs;openssl-1.0.2h-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/openssl-1.0.2h-x86_64-1.txz</URL>
+<MD5>bcf9dc7bb04173f002644e3ce33ab4ab</MD5>
+</FILE>
+
 <!--
 get from github as tarball
 -->
