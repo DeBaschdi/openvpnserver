@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2021.11.02-tap">
+<!ENTITY version   "2021.11.02.02-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2021.11.02.02-tap
+- Fix max Length for Domain Names
 ###2021.11.02-tap
 - Updates for Packages
 - ovpn 2.5.4

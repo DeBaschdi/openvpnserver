@@ -126,7 +126,7 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
 
 	<dl>		
       <dt>DOMAIN</dt>
-      <dd><input type="text" style="width:25%" maxlength="15" name="DOMAIN" id="DOMAIN"  value="<?=$openvpnserver_cfg['DOMAIN'];?>" title="Enter DOMAIN Name"</dd>
+      <dd><input type="text" style="width:25%" maxlength="25" name="DOMAIN" id="DOMAIN"  value="<?=$openvpnserver_cfg['DOMAIN'];?>" title="Enter DOMAIN Name"</dd>
 	</dl>
 	<blockquote class="inline_help">
 		<p>Enter DOMAIN Name e.g tower.local</p>
