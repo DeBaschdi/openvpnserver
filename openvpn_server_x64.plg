@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2021.11.03-tap">
+<!ENTITY version   "2021.11.03.03-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,7 +30,7 @@
 
 <CHANGES>
 ##&name;
-###2021.11.03-tap
+###2021.11.03.03-tap
 - Fix EasyRSA Download
 ###2021.11.02-tap
 - Updates for Packages
