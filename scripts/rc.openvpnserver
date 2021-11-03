@@ -386,7 +386,7 @@ openvpnserver_get_current_commit_date()
 {
 LATEST_GITHUB_RSA=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep 'GitHub</title>' |sed 's/ · OpenVPN.*//' |sed 's#^.*Release EasyRSA ##')
 COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep "<p>$LATEST_GITHUB_RSA (" |sed 's/).*//' |sed 's#^.*(##')
-echo $COMMIT_DATE
+echo "$LATEST_GITHUB_RSA / $COMMIT_DATE "
 }
 
 openvpnserver_get_easy()
