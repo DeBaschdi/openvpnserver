@@ -1,6 +1,6 @@
 Menu="NetworkServices"
 Icon="openvpnserver.png"
-Version="2021.11.02.02-tap"
+Version="2022.06.02.00-tap"
 Author="DeBaschdi"
 Type="xmenu"
 Title="OpenVPN Server TAP Mode"
@@ -338,7 +338,7 @@ if (file_exists("$SERVERCONFIGPATH/openvpnservercert.out"))
 			<left><br><a href='https://forums.lime-technology.com/topic/33783-openvpn-server-client-for-unraid-62-61-are-still-supported/' target='_blank'>Plugin Support Thread</a></left>
 			<left><br><a href='https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage' target='_blank'>Openvpn24ManPage</a></left>			
 			<left><br><a href='https://forums.openvpn.net/' target='_blank'>OpenVPN Support Forum</a></left>
-			 <left><br><a href='https://github.com/OpenVPN/openvpn/blob/release/2.4/Changes.rst' target='_blank'>Overview of changes in OpenVPN 2.4</a></left>
+			 <left><br><a href='https://github.com/OpenVPN/openvpn/blob/release/2.5/Changes.rst' target='_blank'>Overview of changes in OpenVPN 2.4</a></left>
 			<left><br><a href='https://github.com/OpenVPN/easy-rsa/' target='_blank'>EASYRSA on github</a></left>
         </table></left>
 </div>
