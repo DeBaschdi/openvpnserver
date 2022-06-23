@@ -814,8 +814,20 @@ set_var EASYRSA_CERT_EXPIRE    '$EASYRSACERTEXPIRE'
 	send "$PASSPHRASE\r"
 	expect "Re-Enter New CA Key Passphrase:"
 	send "$PASSPHRASE\r"
+	expect "Country Name*"
+	send "\r"
+	expect "State or Province Name*"
+	send "\r"
+	expect "Locality Name*"
+	send "\r"
+	expect "Organization Name*"
+	send "\r"
+	expect "Organizational Unit Name*"
+	send "\r"
 	expect "Common Name*"
 	send "$servername\r"
+	expect "Email Address*"
+	send "\r"
 expect eof
 eof
 
