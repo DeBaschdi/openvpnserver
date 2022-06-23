@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2022.06.23.00-tap">
+<!ENTITY version   "2022.06.23.01-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2022.06.23.01-tap
+- Fix for Cert Settings
 ###2022.06.23.00-tap
 - Add more Settings for Certificate Setup
 ###2022.06.02.00-tap
