@@ -6,6 +6,8 @@ ARGUMENTS_FILE="/usr/local/emhttp/plugins/openvpnserver/openvpnserver_cert.args"
 [ -f $ARGUMENTS_FILE ] && source $ARGUMENTS_FILE
 
 PASSPHRASE=$PASSPHRASE_NEW
+EASYRSACAEXPIRE=$EASYRSACAEXPIRE_NEW
+EASYRSACERTEXPIRE=$EASYRSACERTEXPIRE_NEW
 #KEY_PATH=$KEY_PATH_NEW
 INSTALL_ON_BOOT=$INSTALL_ON_BOOT_NEW
 EASYRSAKEYSIZE=$EASYRSAKEYSIZE_NEW
@@ -13,6 +15,13 @@ DISCONNECT_ON_UMOUNT=$DISCONNECT_ON_UMOUNT_NEW
 CRYPTO=$CRYPTO_NEW
 CURVE=$CURVE_NEW
 SERVER_PATH=$SERVER_PATH_NEW
+
+EASYRSAREQCOUNTRY=$EASYRSAREQCOUNTRY_NEW
+EASYRSAREQPROVINCE=$EASYRSAREQPROVINCE_NEW
+EASYRSAREQCITY=$EASYRSAREQCITY_NEW
+EASYRSAREQORG=$EASYRSAREQORG_NEW
+EASYRSAREQEMAIL=$EASYRSAREQEMAIL_NEW
+EASYRSAREQOU=$EASYRSAREQOU_NEW
 
  write_cfg_cert
 }
@@ -23,15 +32,21 @@ SERVER_PATH=$SERVER_PATH_NEW
 write_cfg_cert()
 {
   echo "# openvpnserver plugin configuration file for the certs" > /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-
-  echo "PASSPHRASE=\"$PASSPHRASE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-  echo "INSTALL_ON_BOOT=\"$INSTALL_ON_BOOT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-  echo "EASYRSAKEYSIZE=\"$EASYRSAKEYSIZE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-  echo "DISCONNECT_ON_UMOUNT=\"$DISCONNECT_ON_UMOUNT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAREQCOUNTRY=$EASYRSAREQCOUNTRY" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAREQPROVINCE=$EASYRSAREQPROVINCE" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAREQCITY=$EASYRSAREQCITY" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAREQORG=$EASYRSAREQORG" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAREQEMAIL=$EASYRSAREQEMAIL" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAREQOU=$EASYRSAREQOU" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
   echo "CRYPTO=$CRYPTO" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
   echo "CURVE=$CURVE" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSAKEYSIZE=\"$EASYRSAKEYSIZE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "PASSPHRASE=\"$PASSPHRASE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSACAEXPIRE=\"$EASYRSACAEXPIRE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "EASYRSACERTEXPIRE=\"$EASYRSACERTEXPIRE\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "INSTALL_ON_BOOT=\"$INSTALL_ON_BOOT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
+  echo "DISCONNECT_ON_UMOUNT=\"$DISCONNECT_ON_UMOUNT\"" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
   echo "SERVER_PATH=$SERVER_PATH" >> /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-
   logger -trc.openvpnserver -plocal7.info -is "Plugin configuration for certs written"
 
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
@@ -743,25 +758,50 @@ openvpnserver_create_server_cert()
 {
 source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
-
+servername=$(uname -n)
 rm -f $SERVER_PATH/openvpnservercert.out
 
 #LOG_DIR="/var/log/openvpnserver_cert"
 cd $SERVER_PATH/easy-rsa/easyrsa3
-
+mkdir -p pki
 echo "SIZE : $EASYRSAKEYSIZE"
 #sed -i '/set_var EASYRSA_KEY_SIZE\t/d' bash easyrsa
 #sed -i "/set_var EASYRSA_ALGO\t\trsa/a \\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" bash easyrsa
 
 
-sed -i '/set_var EASYRSA_KEY_SIZE\t/d' bash easyrsa
-sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};n;a \\\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" easyrsa
+#sed -i '/set_var EASYRSA_KEY_SIZE\t/d' bash easyrsa
+#sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};n;a \\\\tset_var EASYRSA_KEY_SIZE\t${EASYRSAKEYSIZE}" easyrsa
 
-sed -i '/set_var EASYRSA_ALGO\t/d' bash easyrsa
-sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};a \\\tset_var EASYRSA_ALGO\t\t${CRYPTO}" easyrsa
+#sed -i '/set_var EASYRSA_ALGO\t/d' bash easyrsa
+#sed -i "/set_var EASYRSA_REQ_OU/!{p;d;};a \\\tset_var EASYRSA_ALGO\t\t${CRYPTO}" easyrsa
 
-sed -i '/set_var EASYRSA_CURVE\t/d' bash easyrsa
-sed -i "/set_var EASYRSA_KEY_SIZE/!{p;d;};a \\\tset_var EASYRSA_CURVE\t\t${CURVE}" easyrsa
+#sed -i '/set_var EASYRSA_CURVE\t/d' bash easyrsa
+#sed -i "/set_var EASYRSA_KEY_SIZE/!{p;d;};a \\\tset_var EASYRSA_CURVE\t\t${CURVE}" easyrsa
+
+echo ' if [ -z "$EASYRSA_CALLER" ]; then
+        echo "You appear to be sourcing an Easy-RSA 'vars' file." >&2
+        echo "This is no longer necessary and is disallowed. See the section called" >&2
+        echo "How to use this file near the top comments for more details." >&2
+        return 1
+fi
+
+set_var EASYRSA_DN     "org"
+
+set_var EASYRSA_REQ_COUNTRY    "'$EASYRSAREQCOUNTRY'"
+set_var EASYRSA_REQ_PROVINCE   "'$EASYRSAREQPROVINCE'"
+set_var EASYRSA_REQ_CITY       "'$EASYRSAREQCITY'"
+set_var EASYRSA_REQ_ORG        "'$EASYRSAREQORG'"
+set_var EASYRSA_REQ_EMAIL      "'$EASYRSAREQEMAIL'"
+set_var EASYRSA_REQ_OU         "'$EASYRSAREQOU'"
+
+set_var EASYRSA_KEY_SIZE       '$EASYRSAKEYSIZE'
+set_var EASYRSA_ALGO           '$CRYPTO'
+set_var EASYRSA_CURVE          '$CURVE'
+
+set_var EASYRSA_CA_EXPIRE      '$EASYRSACAEXPIRE'
+set_var EASYRSA_CERT_EXPIRE    '$EASYRSACERTEXPIRE'
+' > vars
+cp vars pki/vars
 
 if [ "$RENEW_CERT" != "yes" ]; then
 echo "Start init-pki ....."
@@ -776,7 +816,7 @@ fi
 	expect "Re-Enter New CA Key Passphrase:"
 	send "$PASSPHRASE\r"
 	expect "Common Name*"
-	send "server\r"
+	send "$servername\r"
 expect eof
 eof
 

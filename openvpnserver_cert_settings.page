@@ -58,6 +58,55 @@ $EASYRSA_VERSION_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "/easyrsa_versi
       </select>
       </dd>
       </dl>
+	
+      <dl>
+      <dt>Path to store Server, Clients config files and the Easyrsa V3</dt>
+      <dd>
+      <input type="text" name="SERVER_PATH" id="SERVER_PATH"  required="required" value="<?=$openvpnserver_cert_cfg['SERVER_PATH'];?>" title="" </span><?if (!is_dir($openvpnserver_cert_cfg['SERVER_PATH'])):?><span><i class="fa fa-warning icon warning"></i> Path does not exist</span><?endif;?>
+      </dd>
+      </dl>
+
+      <dl>
+      <dt>Country Code</dt>
+      <dd>
+      <input type="text" name="EASYRSAREQCOUNTRY" id="EASYRSAREQCOUNTRY" value="<?=$openvpnserver_cert_cfg['EASYRSAREQCOUNTRY'];?>" title="Enter your country code"  required="required">
+      </dd>
+      </dl>
+
+      <dl>
+      <dt>State / Province</dt>
+      <dd>
+      <input type="text" name="EASYRSAREQPROVINCE" id="EASYRSAREQPROVINCE" value="<?=$openvpnserver_cert_cfg['EASYRSAREQPROVINCE'];?>" title="Enter your State/Province"  required="required">
+      </dd>
+      </dl>
+
+      <dl>
+      <dt>City</dt>
+      <dd>
+      <input type="text" name="EASYRSAREQCITY" id="EASYRSAREQCITY" value="<?=$openvpnserver_cert_cfg['EASYRSAREQCITY'];?>" title="Enter your City"  required="required">
+      </dd>
+      </dl>
+
+      <dl>
+      <dt>Organisation</dt>
+      <dd>
+      <input type="text" name="EASYRSAREQORG" id="EASYRSAREQORG" value="<?=$openvpnserver_cert_cfg['EASYRSAREQORG'];?>" title="Enter your Organisation"  required="required">
+      </dd>
+      </dl>
+
+      <dl>
+      <dt>Admin E-Mail</dt>
+      <dd>
+      <input type="text" name="EASYRSAREQEMAIL" id="EASYRSAREQEMAIL" value="<?=$openvpnserver_cert_cfg['EASYRSAREQEMAIL'];?>" title="Enter your Admin-Email"  required="required">
+      </dd>
+      </dl>
+
+      <dl>
+      <dt>Organisation Unit</dt>
+      <dd>
+      <input type="text" name="EASYRSAREQOU" id="EASYRSAREQOU" value="<?=$openvpnserver_cert_cfg['EASYRSAREQOU'];?>" title="Enter your Organisation Unit"  required="required">
+      </dd>
+      </dl>
 
       <dl>
       <dt>RSA key size</dt>
@@ -74,13 +123,6 @@ $EASYRSA_VERSION_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "/easyrsa_versi
 	<blockquote class="inline_help">
 			<p>If you chose 4096 bits or larger then this will take very long time. Depending on your system, this might take up to 30 to 60 minutes.</p>
 	</blockquote>
-	
-      <dl>
-      <dt>Path to store Server, Clients config files and the Easyrsa V3</dt>
-      <dd>
-      <input type="text" name="SERVER_PATH" id="SERVER_PATH"  required="required" value="<?=$openvpnserver_cert_cfg['SERVER_PATH'];?>" title="" </span><?if (!is_dir($openvpnserver_cert_cfg['SERVER_PATH'])):?><span><i class="fa fa-warning icon warning"></i> Path does not exist</span><?endif;?>
-      </dd>
-      </dl>
 
       <dl>
       <dt>Private key pass phrase for signing cert</dt>
@@ -88,7 +130,21 @@ $EASYRSA_VERSION_FILE = $openvpnserver_cert_cfg['SERVER_PATH'] . "/easyrsa_versi
       <input type="text" name="PASSPHRASE" id="PASSPHRASE" value="<?=$openvpnserver_cert_cfg['PASSPHRASE'];?>" title="Default is ..."  required="required">
       </dd>
       </dl>   
-     
+
+      <dl>
+      <dt>EasyRSA CA Expire Days</dt>
+      <dd>
+      <input type="text" name="EASYRSACAEXPIRE" id="EASYRSACAEXPIRE" value="<?=$openvpnserver_cert_cfg['EASYRSACAEXPIRE'];?>" title="In how many days should the root CA key expire?"  required="required">
+      </dd>
+      </dl>
+
+      <dl>
+      <dt>EasyRSA Cert Expire Days</dt>
+      <dd>
+      <input type="text" name="EASYRSACERTEXPIRE" id="EASYRSACERTEXPIRE" value="<?=$openvpnserver_cert_cfg['EASYRSACERTEXPIRE'];?>" title="In how many days should certificates expire?"  required="required">
+      </dd>
+      </dl>
+
       <dl>
       <dt>Default crypto mode</dt>
       <dd>
