@@ -225,7 +225,6 @@ if [ "$IPP" == "ipp.txt" ]; then
 fi
 
 echo "push "\""explicit-exit-notify""\"" >> $SERVER_PATH/openvpnserver.ovpn
-echo "push "\""dhcp-release""\"" >> $SERVER_PATH/openvpnserver.ovpn
 echo "push "\""dhcp-pre-release""\"" >> $SERVER_PATH/openvpnserver.ovpn
 echo "push "\""dhcp-renew""\"" >> $SERVER_PATH/openvpnserver.ovpn
 echo "push "\""route-metric 101""\"" >> $SERVER_PATH/openvpnserver.ovpn
@@ -324,7 +323,6 @@ if [ "$LAN_SUBNET" = "Enable" ]; then
 	IP_ADDR="`echo $NETWORK | rev | sed s'/0/1/' | rev`"
 fi
 
-echo "push "\"resolv-retry infinite"\"" >> $SERVER_PATH/openvpnserver.ovpn
 echo "status /var/log/openvpnserver-status.log 5" >> $SERVER_PATH/openvpnserver.ovpn
 echo "log-append /var/log/openvpnserver.log" >> $SERVER_PATH/openvpnserver.ovpn
 echo "status-version 2" >> $SERVER_PATH/openvpnserver.ovpn
@@ -495,9 +493,10 @@ source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 client=$2
+VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server" |sed 's/\/.*//' | sed 's/$/\ ; /'`"
 
 ## check if this client package already exists
-if grep $client $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt; then
+if grep $client $VALID_USER; then
    echo "$client alredy exist. try a different name!" > $SERVER_PATH/clients/$client/"$client"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
    echo "$client alredy exist. try a different name!"
    exit 1
@@ -554,7 +553,6 @@ ca ca.crt
 cert $client.crt
 key $client.key
 $TLSENCRYPT ta.key
-resolv-retry infinite
 $COMP_LZO_TMP
 $VERB
 mute-replay-warnings
@@ -904,7 +902,7 @@ source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 if [ -f $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt ]; then
 #   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g'  | grep -Eiv "server" | sed 's/$/\ ; /'`"
-   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server" | sed 's/$/\ ; /'`"
+   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server" |sed 's/\/.*//' | sed 's/$/\ ; /'`"
 
     if [ "$VIEW_VALID_USER" == "" ]
       then
