@@ -390,15 +390,14 @@ openvpnserver_get_easy_version()
 {
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 echo $SERVER_PATH
-echo "--- Available versions ----" > $SERVER_PATH/easyrsa_versions_full_path.txt
-curl  --fail --silent https://github.com/OpenVPN/easy-rsa/releases | grep tar.gz |  grep refs/ | cut -d\" -f2 | cut -d\" -f1 | sed 's#^#https://github.com#g' | grep -v "sig" >> $SERVER_PATH/easyrsa_versions_full_path.txt
-EASYRSA_FULL_PATH_VERSIONS=$(curl  --fail --silent https://github.com/OpenVPN/easy-rsa/releases | grep tar.gz |  grep refs/ | cut -d\" -f2 | sed 's#^#https://github.com#g' | grep -v "sig")
+echo "--- Latest Version on Github ----" > $SERVER_PATH/easyrsa_versions_full_path.txt
+curl -s -L https://github.com/OpenVPN/easy-rsa/tags |grep tar.gz |grep -o '/OpenVPN*/easy-rsa[^"]*' |sed 's#^#https://github.com#g' >> $SERVER_PATH/easyrsa_versions_full_path.txt
 }
 
 openvpnserver_get_current_commit_date()
 {
 LATEST_GITHUB_RSA=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep 'GitHub</title>' |sed 's/ · OpenVPN.*//' |sed 's#^.*Release EasyRSA ##')
-COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep "<p>$LATEST_GITHUB_RSA (" |sed 's/).*//' |sed 's#^.*(##')
+COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |sed -n '/"'$LATEST_GITHUB_RSA'/p' |sed 's/).*//' |sed 's#^.*(##')
 echo "$LATEST_GITHUB_RSA / $COMMIT_DATE "
 }
 
@@ -409,11 +408,11 @@ source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 cd $SERVER_PATH
 LATEST_GITHUB_RSA=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep 'GitHub</title>' |sed 's/ · OpenVPN.*//' |sed 's#^.*Release EasyRSA ##')
-COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep "<p>$LATEST_GITHUB_RSA (" |sed 's/).*//' |sed 's#^.*(##')
+COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |sed -n '/"'$LATEST_GITHUB_RSA'/p' |sed 's/).*//' |sed 's#^.*(##')
 
 echo "Latest EasyRSA version on GitHUB : $LATEST_GITHUB_RSA was comitted on github then : $COMMIT_DATE" > $SERVER_PATH/easyrsa_latest_commit.txt
 
-EASYRSA_DL_VERSION=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep $LATEST_GITHUB_RSA |grep tar.gz |sed 's/" rel=.*//' |sed 's#^.*href="##' | sed 's#^#https://github.com#g')
+EASYRSA_DL_VERSION=$(curl -L -s $(curl -s -L https://github.com/OpenVPN/easy-rsa/releases/latest |grep expanded_assets |grep -o 'https*://[^"]*') |grep tar.gz |grep -o '/\OpenVPN[^"]*' |sed 's#^#https://github.com#g')
 echo $EASYRSA_DL_VERSION
 
 EASYRSA_FILENAME=$(echo $EASYRSA_DL_VERSION |sed 's#^.*tags/##')
