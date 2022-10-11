@@ -901,7 +901,7 @@ source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 if [ -f $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt ]; then
 #   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g'  | grep -Eiv "server" | sed 's/$/\ ; /'`"
-   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server" |sed 's/\/.*//' | sed 's/$/\ ; /'`"
+   VIEW_VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server/" |sed 's/\/.*//' | sed 's/$/\ ; /'`"
 
     if [ "$VIEW_VALID_USER" == "" ]
       then
