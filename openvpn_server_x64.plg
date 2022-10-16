@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2022.10.11.01-tap">
+<!ENTITY version   "2022.10.16.01-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2022.10.16.01-tap
+- Fix deam easyrsa again
 ###2022.10.11.01-tap
 - Fix Valid User-View
 ###2022.09.20.01-tap

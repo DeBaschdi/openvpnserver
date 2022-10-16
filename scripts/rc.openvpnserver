@@ -396,8 +396,8 @@ curl -s -L https://github.com/OpenVPN/easy-rsa/tags |grep tar.gz |grep -o '/Open
 
 openvpnserver_get_current_commit_date()
 {
-LATEST_GITHUB_RSA=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep 'GitHub</title>' |sed 's/ · OpenVPN.*//' |sed 's#^.*Release EasyRSA ##')
-COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |sed -n '/"'$LATEST_GITHUB_RSA'/p' |sed 's/).*//' |sed 's#^.*(##')
+LATEST_GITHUB_RSA=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep 'GitHub</title>' |sed 's/ · OpenVPN.*//' |sed 's#^.*Release EasyRSA ##' |sed s/\<title\>//g |sed 's#^.*Release ##')
+COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest | sed -n 's/.*\([0-9][0-9][0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]*\).*/\1/p' | sort -r |head -n1)
 echo "$LATEST_GITHUB_RSA / $COMMIT_DATE "
 }
 
@@ -407,8 +407,8 @@ source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 cd $SERVER_PATH
-LATEST_GITHUB_RSA=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep 'GitHub</title>' |sed 's/ · OpenVPN.*//' |sed 's#^.*Release EasyRSA ##')
-COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |sed -n '/"'$LATEST_GITHUB_RSA'/p' |sed 's/).*//' |sed 's#^.*(##')
+LATEST_GITHUB_RSA=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest |grep 'GitHub</title>' |sed 's/ · OpenVPN.*//' |sed 's#^.*Release EasyRSA ##' |sed s/\<title\>//g |sed 's#^.*Release ##')
+COMMIT_DATE=$(curl -L --fail --silent https://github.com/OpenVPN/easy-rsa/releases/latest | sed -n 's/.*\([0-9][0-9][0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]*\).*/\1/p' | sort -r |head -n1)
 
 echo "Latest EasyRSA version on GitHUB : $LATEST_GITHUB_RSA was comitted on github then : $COMMIT_DATE" > $SERVER_PATH/easyrsa_latest_commit.txt
 
