@@ -138,7 +138,7 @@ if [ ! -f /var/run/openvpnserver/openvpnserver.pid ]; then
 	chmod 755 /var/local/emhttp/plugins/openvpnserver/openvpnserver.sh
 	sleep 0.5
 
-	nohup /var/local/emhttp/plugins/openvpnserver/openvpnserver.sh > /var/local/emhttp/plugins/openvpnserver/openvpnserver.out /dev/null & 
+	nohup /var/local/emhttp/plugins/openvpnserver/openvpnserver.sh > /var/local/emhttp/plugins/openvpnserver/openvpnserver.out /dev/null &
 	sleep 1
 
 	if [ -f /var/run/openvpnserver/openvpnserver.pid ]; then
@@ -147,7 +147,7 @@ if [ ! -f /var/run/openvpnserver/openvpnserver.pid ]; then
     brctl addif br0 tap0
     ifconfig tap0 0.0.0.0 promisc up
     echo "Adding iptables rule ....."
-    openvpnserver_iptables_add; 
+    openvpnserver_iptables_add;
   else
  		echo "An error occurred, server not started!. More info in /var/log/openvpnserver.log or /var/local/emhttp/plugins/openvpnserver/openvpnserver.out"
  	fi
@@ -492,13 +492,16 @@ source /boot/config/plugins/openvpnserver/openvpnserver.cfg
 source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 client=$2
-VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server" |sed 's/\/.*//' | sed 's/$/\ ; /'`"
+
+VALID_USER="`grep -P "V\t" easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server/" |sed 's/\/.*//'`"
 
 ## check if this client package already exists
-if grep $client $VALID_USER; then
+if [[ $VALID_USER =~ $client ]]; then
    echo "$client alredy exist. try a different name!" > $SERVER_PATH/clients/$client/"$client"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
    echo "$client alredy exist. try a different name!"
    exit 1
+else
+   echo "Creating Client $client !"
 fi
 
 ## New V3 easy-rsa to client "###
@@ -511,6 +514,8 @@ cd $SERVER_PATH/easy-rsa/easyrsa3
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$client/"$client"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
 	spawn bash easyrsa build-client-full $client nopass
+        expect "Confirm*"
+        send "yes\r"
 	expect "Enter pass phrase*"
 	send "$PASSPHRASE\r"
 expect eof
@@ -687,7 +692,7 @@ cd $SERVER_PATH/clients/$client
 		echo "" >> README.txt
 		echo "Your certificate is now installed on iOS and it is ready to be used by the OpenVPN app." >> README.txt
 		echo "" >> README.txt
-	    	echo "e-mail the ovpn file to yourself as well. The e-mail app on iOS will allow you to import this configuration to the OpenVPN app by clicking on the file." >> README.txt 
+	    	echo "e-mail the ovpn file to yourself as well. The e-mail app on iOS will allow you to import this configuration to the OpenVPN app by clicking on the file." >> README.txt
 		echo "The OpenVPN app will show your imported configuration. Confirm by tapping the  green + icon." >> README.txt
 		echo "Next step, select the certificate to use with this profile. Here you will select the certificate we imported into iOS in the previous step." >> README.txt
 
@@ -825,14 +830,18 @@ set_var EASYRSA_CERT_EXPIRE    '$EASYRSACERTEXPIRE'
 	send "$servername\r"
 	expect "Email Address*"
 	send "\r"
+	expect "Serial-number*"
+	send "\r"
 expect eof
 eof
 
 sleep 1
 
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
-	set timeout 5
+	set timeout 10
 	spawn bash easyrsa build-server-full server nopass
+        expect "Confirm*"
+        send "yes\r"
 	expect "Enter pass phrase*"
 	send "$PASSPHRASE\r"
 expect eof
@@ -844,7 +853,7 @@ if [ $CRYPTO == "rsa" ];then
 	bash easyrsa gen-dh |& tee -a $SERVER_PATH/openvpnservercert.out
 fi
 
-openvpn --genkey --secret ta.key | tee -a $SERVER_PATH/openvpnservercert.out
+openvpn --genkey secret ta.key | tee -a $SERVER_PATH/openvpnservercert.out
 
 RENEW_CERT=""
 
@@ -1034,5 +1043,5 @@ case "$1" in
     ;;
 *)
 
-    echo "usage $0 start|stop|restart|commit_date_easyrsa|download_easy-rsa|create_server_cert|renew_server_cert|add_client 'name'|add_client 'name' 'password|revoke_client 'name'|view_valid_user|view_online_user|view_revoked_user"
+    echo "usage $0 start|stop|restart|commit_date_easyrsa|download_easy-rsa|create_server_cert|renew_server_cert|add_client 'Inline/single' 'name'|revoke_client 'name'|view_valid_user|view_online_user|view_revoked_user"
 esac
