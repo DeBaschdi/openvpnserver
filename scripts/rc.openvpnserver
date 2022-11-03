@@ -493,7 +493,7 @@ source /boot/config/plugins/openvpnserver/openvpnserver_cert.cfg
 
 client=$2
 
-VALID_USER="`grep -P "V\t" easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server/" |sed 's/\/.*//'`"
+VALID_USER="`grep -P "V\t" $SERVER_PATH/easy-rsa/easyrsa3/pki/index.txt | sed 's/.*CN=/ /g' | grep -Eiv "server/" |sed 's/\/.*//'`"
 
 ## check if this client package already exists
 if [[ $VALID_USER =~ $client ]]; then
