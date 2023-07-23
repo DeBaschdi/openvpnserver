@@ -146,7 +146,9 @@ $CHECKFOLDERVPN = trim($CHECKFOLDERVPNTMP);
       <dt>Tunnel Protocol</dt>
       <dd><select name="PROTOCOL" id="PROTOCOL" size="1">
       <?=mk_option($openvpnserver_cfg['PROTOCOL'], "udp", "UDP");?>
+      <?=mk_option($openvpnserver_cfg['PROTOCOL'], "udp6", "UDP6");?>
       <?=mk_option($openvpnserver_cfg['PROTOCOL'], "tcp", "TCP");?>
+      <?=mk_option($openvpnserver_cfg['PROTOCOL'], "tcp6", "TCP6");?>
       </select>
 	   </dd>
 	</dl>

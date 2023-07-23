@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2023.07.24.03-tap">
+<!ENTITY version   "2023.07.24.04-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,9 @@
 
 <CHANGES>
 ##&name;
+###2023.07.24.04-tap
+- Install stable easy rsa 3.1.0 by default
+- Add Option for IPV6 networking
 ###2023.07.24.03-tap
 - Install stable easy rsa 3.1.0 by default
 ###2023.07.24.01-tap
