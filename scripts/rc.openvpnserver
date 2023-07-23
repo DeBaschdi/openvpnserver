@@ -842,10 +842,10 @@ sleep 1
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/openvpnservercert.out
 	set timeout 10
 	spawn bash easyrsa build-server-full server nopass
-        expect "Confirm*"
-        send "yes\r"
 	expect "Enter pass phrase*"
 	send "$PASSPHRASE\r"
+	expect "Confirm*"
+  send "yes\r"
 expect eof
 eof
 
