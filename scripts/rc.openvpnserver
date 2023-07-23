@@ -514,10 +514,10 @@ cd $SERVER_PATH/easy-rsa/easyrsa3
 /usr/bin/expect <<eof | tee -a $SERVER_PATH/clients/$client/"$client"_log.txt  #/var/local/emhttp/plugins/openvpnserver/openvpnserver.out
 	set timeout 5
 	spawn bash easyrsa build-client-full $client nopass
+		    expect "Enter pass phrase*"
+	      send "$PASSPHRASE\r"
         expect "Confirm*"
         send "yes\r"
-	expect "Enter pass phrase*"
-	send "$PASSPHRASE\r"
 expect eof
 eof
 

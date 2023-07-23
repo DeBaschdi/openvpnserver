@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2023.07.24.01-tap
+- Fix easyrsa ca verify
 ###2022.11.28.01-tap
 - Remove openssl, because shipped with Unraid
 - Update OVPN and tcl Packages
