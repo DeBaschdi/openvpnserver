@@ -249,7 +249,7 @@ if (file_exists("$SERVERCONFIGPATH/openvpnservercert.out"))
         <form name="openvpnserver_installcert" method="POST" action="/update.php" target="progressFrame">
 				<input type="hidden" name="#command" value="/plugins/openvpnserver/scripts/rc.openvpnserver">
                 <input type="hidden" name="#arg[3]" value="download_easy-rsa">
-                <button style="font-size:15px">Install RSA key management package (Easy-RSA)  <i class="fa fa-download"></i></button>
+                <button style="font-size:15px">Install stable EASY-RSA 3.1.0 <i class="fa fa-download"></i></button>
 		</form>
        </td>
 
