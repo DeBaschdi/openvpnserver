@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2023.07.24.04-tap">
+<!ENTITY version   "2025.01.24.00-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2025.01.24.00-tap
+- Update Packages for Unraid 7.0.0
 ###2023.07.24.04-tap
 - Install stable easy rsa 3.1.0 by default
 - Add Option for IPV6 networking
@@ -165,9 +167,9 @@ certificate provided is truly a client certificate, and vice versa.
 openvpnserver version 3 64Bit with easyrsa V3
 -->
 
-<FILE Name="&pkgs;tcl-8.6.13-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/tcl-8.6.13-x86_64-1.txz</URL>
-<MD5>a965693f830174845e46c80b7c4af37d</MD5>
+<FILE Name="&pkgs;tcl-8.6.15-x86_64-2.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/tcl-8.6.15-x86_64-2.txz</URL>
+<MD5>30d34fd034d58d52f81f86dfc302d082</MD5>
 </FILE>
 
 <FILE Name="&pkgs;expect-5.45.4-x86_64-4.txz" Run="upgradepkg --install-new">
@@ -175,9 +177,19 @@ openvpnserver version 3 64Bit with easyrsa V3
 <MD5>1c99acc563a57cf278c057edc43ec8f1</MD5>
 </FILE>
 
-<FILE Name="&pkgs;openvpn-2.5.8-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>&gitpkgURL;/openvpn-2.5.8-x86_64-1.txz</URL>
-<MD5>11f9ed20532b58c1533f42eb1a35c241</MD5>
+<FILE Name="&pkgs;openvpn-2.6.13-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/openvpn-2.6.13-x86_64-1.txz</URL>
+<MD5>5b6debc818c22f2368bcf7dcf2e2f618</MD5>
+</FILE>
+
+<FILE Name="&pkgs;libnsl-2.0.1-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/libnsl-2.0.1-x86_64-1.txz</URL>
+<MD5>bb99b058acec28656db8064309f7bccf</MD5>
+</FILE>
+
+<FILE Name="&pkgs;lzo-2.10-x86_64-4.txz" Run="upgradepkg --install-new">
+<URL>&gitpkgURL;/lzo-2.10-x86_64-4.txz</URL>
+<MD5>ff78c137b74e3f442c797773c3a2651b</MD5>
 </FILE>
 
 <!--
