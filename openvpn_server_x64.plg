@@ -4,7 +4,7 @@
 <!ENTITY name      "openvpnserver">
 <!ENTITY author    "DeBaschdi">
 <!ENTITY plgauthor    "DeBaschdi">
-<!ENTITY version   "2025.01.24.00-tap">
+<!ENTITY version   "2025.01.27.00-tap">
 <!ENTITY launch    "Settings/&name;">
 <!ENTITY gitURL    "https://github.com/&plgauthor;">
 <!ENTITY gitpkgURL    "&gitURL;/packages/raw/master">
@@ -30,6 +30,8 @@
 
 <CHANGES>
 ##&name;
+###2025.01.27.00-tap
+- Fix SSL3 Cert Creation issues
 ###2025.01.24.00-tap
 - Update Packages for Unraid 7.0.0
 ###2023.07.24.04-tap

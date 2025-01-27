@@ -1,6 +1,6 @@
 Menu="NetworkServices"
 Icon="openvpnserver.png"
-Version="2025.01.24.00-tap"
+Version="2025.01.27.00-tap"
 Author="DeBaschdi"
 Type="xmenu"
 Title="OpenVPN Server TAP Mode"
